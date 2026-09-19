@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cálculos de Muelle & Rendimiento</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Prevent iOS input auto-zoom */
+    input, select { font-size: 16px !important; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .card-shadow {
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+    .dark .card-shadow {
+      box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.35), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body class="h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 pb-20 md:pb-6">
+
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-5 py-3.5 flex items-center justify-between transition-colors">
+    <div class="flex items-center space-x-3">
+      <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-600/30">
+        <i data-lucide="cpu" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg md:text-xl leading-tight text-slate-900 dark:text-white">Cálculo Muelle</h1>
+        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">Rendimiento y Tiempos de Línea</p>
+      </div>
+    </div>
+
+    <!-- Actions: Theme Toggle & Reset -->
+    <div class="flex items-center space-x-2">
+      <!-- Theme Switcher Button -->
+      <button onclick="toggleTheme()" id="themeBtn" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition active:scale-95 border border-slate-200 dark:border-slate-700/80" title="Cambiar tema Día/Noche">
+        <i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden dark:block text-amber-400"></i>
+        <i data-lucide="moon" id="moonIcon" class="w-5 h-5 block dark:hidden text-indigo-600"></i>
+      </button>
+
+      <!-- Reset Button -->
+      <button onclick="resetValues()" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition active:scale-95 border border-slate-200 dark:border-slate-700/80" title="Restablecer valores">
+        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-2xl mx-auto w-full px-4 md:px-6 py-5 space-y-4">
+
+    <!-- KPI Summary Cards -->
+    <div class="grid grid-cols-2 gap-3.5">
+      <!-- KPI 1: Avería / Tiempo Perdido -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-shadow relative overflow-hidden group transition-all">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tiempo Perdido</span>
+          <div class="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <i data-lucide="octagon-alert" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div>
+          <div id="kpiAveriaMin" class="text-2xl md:text-3xl font-black text-amber-600 dark:text-amber-400 tracking-tight">0 <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">min</span></div>
+          <div id="kpiAveriaHoras" class="text-xs font-mono mt-1 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 inline-block border border-slate-200 dark:border-slate-700/50">00:00:00 (Excel)</div>
+        </div>
+      </div>
+
+      <!-- KPI 2: Velocidad Real Calculada -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-shadow relative overflow-hidden group transition-all">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-500/10 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Velocidad Real</span>
+          <div class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+            <i data-lucide="activity" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div>
+          <div id="kpiVelocidadReal" class="text-2xl md:text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">0</div>
+          <div class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">aves / hora</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 card-shadow space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50">
+            <i data-lucide="layers" class="w-4 h-4 md:w-5 md:h-5"></i>
+          </div>
+          <h2 class="font-bold text-base text-slate-900 dark:text-slate-100">Datos del Lote</h2>
+        </div>
+        <span class="text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Teórico</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3.5">
+        <!-- Cantidad del Lote -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Tamaño Lote (Aves)</label>
+          <input type="number" id="inpTpLote" value="12000" step="100" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition hover:border-slate-400 dark:hover:border-slate-600" oninput="calculateAll()">
+        </div>
+
+        <!-- Velocidad Teórica -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Velocidad Teórica</label>
+          <select id="inpVelTeorica" onchange="calculateAll()" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition hover:border-slate-400 dark:hover:border-slate-600">
+            <option value="12000" selected>12.000 / h</option>
+            <option value="11300">11.300 / h</option>
+            <option value="11200">11.200 / h</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tiempo Teórico Resultante -->
+      <div class="bg-slate-50 dark:bg-slate-950 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 flex justify-between items-center text-sm">
+        <span class="text-slate-600 dark:text-slate-400 font-medium">Tiempo Teórico Requerido:</span>
+        <div class="text-right">
+          <span id="resTeoricoMin" class="font-bold text-slate-900 dark:text-slate-100">60 min</span>
+          <span id="resTeoricoHora" class="text-slate-500 dark:text-slate-400 ml-1 font-mono">(01:00:00)</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 card-shadow space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+            <i data-lucide="timer" class="w-4 h-4 md:w-5 md:h-5"></i>
+          </div>
+          <h2 class="font-bold text-base text-slate-900 dark:text-slate-100">Registro de Horario Real</h2>
+        </div>
+        <span class="text-xs font-mono uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">En Vivo</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3.5">
+        <!-- Hora Inicio -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Hora Inicio</label>
+          <input type="time" id="inpInicio" value="21:00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition hover:border-slate-400 dark:hover:border-slate-600" onchange="calculateAll()">
+        </div>
+
+        <!-- Hora Final -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Hora Final</label>
+          <input type="time" id="inpFinal" value="22:10" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition hover:border-slate-400 dark:hover:border-slate-600" onchange="calculateAll()">
+        </div>
+      </div>
+
+      <!-- Resumen Tiempo Transcurrido Real -->
+      <div class="bg-slate-50 dark:bg-slate-950 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 space-y-2.5 text-sm">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-600 dark:text-slate-400 font-medium">Duración Bruta Transcurrida:</span>
+          <span id="resBruto" class="font-mono font-bold text-slate-900 dark:text-slate-100">01:10:00 (70 min)</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-slate-200 dark:border-slate-800 pt-2.5">
+          <span class="text-slate-600 dark:text-slate-400 font-medium">Diferencia vs Teórico:</span>
+          <span id="resDiferencia" class="font-mono font-bold text-amber-600 dark:text-amber-400 text-base">+00:10:00 (+10 min)</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl card-shadow overflow-hidden transition-all duration-300">
+      <button onclick="toggleAccordion('accDescansos')" class="w-full p-4 md:p-5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition active:bg-slate-100 dark:active:bg-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50">
+            <i data-lucide="pause-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-base text-slate-900 dark:text-slate-100">Descansos Automáticos y Cambios</h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">Detección automática por rango horario</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span id="badgeDescansos" class="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-800">0 min</span>
+          <i id="iconAccDescansos" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+        </div>
+      </button>
+
+      <!-- Collapsible Body (Closed by default) -->
+      <div id="accDescansos" class="hidden px-4 md:px-5 pb-5 pt-1 border-t border-slate-200 dark:border-slate-800 space-y-3.5">
+        
+        <!-- Toggle Automatic Breaks -->
+        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+          <span class="text-xs md:text-sm text-slate-700 dark:text-slate-200 font-semibold">Aplicar descansos automáticamente</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="chkAutoBreaks" checked onchange="calculateAll()" class="sr-only peer">
+            <div class="w-10 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+
+        <!-- Break Interval 1 -->
+        <div class="flex items-center justify-between text-xs md:text-sm p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+          <div class="space-y-0.5">
+            <div class="font-semibold text-slate-800 dark:text-slate-200">Descanso 1 (25 min)</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">Horario: 23:35 a 00:00</div>
+          </div>
+          <span id="statDescanso1" class="font-mono text-xs font-semibold px-3 py-1.5 rounded-lg border">0 min apl.</span>
+        </div>
+
+        <!-- Break Interval 2 -->
+        <div class="flex items-center justify-between text-xs md:text-sm p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+          <div class="space-y-0.5">
+            <div class="font-semibold text-slate-800 dark:text-slate-200">Descanso 2 (15 min)</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">Horario: 02:30 a 02:45</div>
+          </div>
+          <span id="statDescanso2" class="font-mono text-xs font-semibold px-3 py-1.5 rounded-lg border">0 min apl.</span>
+        </div>
+
+        <!-- Batch Changes -->
+        <div class="grid grid-cols-2 gap-3.5 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Nº Cambios Lote</label>
+            <input type="number" id="inpNumCambios" value="0" min="0" step="1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500" oninput="calculateAll()">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Min por Cambio</label>
+            <input type="number" id="inpMinPorCambio" value="3" min="0" step="1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500" oninput="calculateAll()">
+          </div>
+        </div>
+
+        <div class="bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800/80 rounded-xl p-3.5 text-xs md:text-sm flex justify-between items-center text-indigo-900 dark:text-indigo-200">
+          <span class="font-medium">Tiempo Neto Final Procesamiento:</span>
+          <span id="resTiempoFinalNeto" class="font-mono font-bold text-sm md:text-base text-indigo-700 dark:text-indigo-100">01:10:00</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl card-shadow overflow-hidden transition-all duration-300">
+      <button onclick="toggleAccordion('accConversor')" class="w-full p-4 md:p-5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition active:bg-slate-100 dark:active:bg-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+            <i data-lucide="binary" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-base text-slate-900 dark:text-slate-100">Conversión Rápida de Tiempos</h2>
+            <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">Minutos a Días Excel y Formatos de Hora</p>
+          </div>
+        </div>
+        <i id="iconAccConversor" data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+      </button>
+
+      <!-- Collapsible Body (Closed by default) -->
+      <div id="accConversor" class="hidden px-4 md:px-5 pb-5 pt-1 border-t border-slate-200 dark:border-slate-800 space-y-4">
+        <div class="grid grid-cols-2 gap-3.5 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Minutos a Horas</label>
+            <input type="number" id="convMinInput" placeholder="Ej: 60" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-slate-100 font-mono text-sm focus:outline-none focus:border-emerald-500">
+            <div id="convMinResult" class="text-xs md:text-sm font-mono text-emerald-700 dark:text-emerald-300 mt-2 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-slate-800 inline-block border border-emerald-200 dark:border-slate-700 font-semibold">00:00:00</div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Horas a Minutos</label>
+            <input type="number" id="convHoursInput" placeholder="Ej: 1" step="0.1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-slate-100 font-mono text-sm focus:outline-none focus:border-emerald-500">
+            <div id="convHoursResult" class="text-xs md:text-sm font-mono text-emerald-700 dark:text-emerald-300 mt-2 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-slate-800 inline-block border border-emerald-200 dark:border-slate-700 font-semibold">0 min</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-xs md:text-sm text-slate-500 dark:text-slate-400 space-y-1.5 card-shadow">
+      <div class="font-semibold text-slate-800 dark:text-slate-200 flex items-center space-x-2 mb-1">
+        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+        <span>Notas del Sistema</span>
+      </div>
+      <p>• Los descansos activos se <strong>descuentan automáticamente del tiempo de avería</strong> para evitar registrar falsos fallos de línea.</p>
+      <p>• Los cálculos utilizan el formato decimal de Excel donde 1 día equivale a 1440 minutos.</p>
+    </div>
+
+  </main>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Theme Switcher Logic (Día / Noche)
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Load persisted theme preference
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+
+    // Accordion Toggle
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById('icon' + id.charAt(0).toUpperCase() + id.slice(1));
+      const isHidden = content.classList.contains('hidden');
+
+      if (isHidden) {
+        content.classList.remove('hidden');
+        if (icon) icon.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        if (icon) icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // Time Conversion Helpers
+    function timeToMinutes(timeStr) {
+      if (!timeStr) return 0;
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function minutesToHHMMSS(totalMinutes) {
+      const isNegative = totalMinutes < 0;
+      let absMin = Math.abs(totalMinutes);
+      const hrs = Math.floor(absMin / 60);
+      const mins = Math.floor(absMin % 60);
+      const secs = Math.round((absMin - Math.floor(absMin)) * 60);
+
+      const formatted = [hrs, mins, secs]
+        .map(v => String(v).padStart(2, '0'))
+        .join(':');
+
+      return isNegative ? `-${formatted}` : formatted;
+    }
+
+    // Calculate time overlap between active shift and break intervals
+    function calculateOverlap(start1, end1, start2, end2) {
+      let ranges1 = [];
+      if (end1 < start1) {
+        ranges1.push({ s: start1, e: 1440 });
+        ranges1.push({ s: 0, e: end1 });
+      } else {
+        ranges1.push({ s: start1, e: end1 });
+      }
+
+      let ranges2 = [];
+      if (end2 < start2) {
+        ranges2.push({ s: start2, e: 1440 });
+        ranges2.push({ s: 0, e: end2 });
+      } else {
+        ranges2.push({ s: start2, e: start2 === end2 ? start2 : end2 });
+      }
+
+      let totalOverlap = 0;
+      for (let r1 of ranges1) {
+        for (let r2 of ranges2) {
+          let overlapStart = Math.max(r1.s, r2.s);
+          let overlapEnd = Math.min(r1.e, r2.e);
+          if (overlapStart < overlapEnd) {
+            totalOverlap += (overlapEnd - overlapStart);
+          }
+        }
+      }
+      return totalOverlap;
+    }
+
+    // Main calculation engine
+    function calculateAll() {
+      // 1. Theoretical calculations
+      const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
+      const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
+
+      const teoricoMin = velTeorica > 0 ? (tpLote / velTeorica) * 60 : 0;
+      document.getElementById('resTeoricoMin').textContent = `${Math.round(teoricoMin)} min`;
+      document.getElementById('resTeoricoHora').textContent = `(${minutesToHHMMSS(teoricoMin)})`;
+
+      // 2. Real elapsed time calculation
+      const inicioStr = document.getElementById('inpInicio').value;
+      const finalStr = document.getElementById('inpFinal').value;
+
+      const minInicio = timeToMinutes(inicioStr);
+      const minFinal = timeToMinutes(finalStr);
+
+      let brutoMin = minFinal - minInicio;
+      if (brutoMin < 0) brutoMin += 1440; // Midnight rollover support
+
+      document.getElementById('resBruto').textContent = `${minutesToHHMMSS(brutoMin)} (${Math.round(brutoMin)} min)`;
+
+      // Difference vs theoretical
+      const diffMin = brutoMin - teoricoMin;
+      const diffFormatted = (diffMin >= 0 ? '+' : '') + minutesToHHMMSS(diffMin) + ` (${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)} min)`;
+      document.getElementById('resDiferencia').textContent = diffFormatted;
+      document.getElementById('resDiferencia').className = `font-mono font-bold text-base ${diffMin > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`;
+
+      // 3. Automatic breaks and batch change deductions
+      const autoBreaksEnabled = document.getElementById('chkAutoBreaks').checked;
+      let overlap1 = 0; // 23:35 (1415 min) to 00:00 (1440 min)
+      let overlap2 = 0; // 02:30 (150 min) to 02:45 (165 min)
+
+      if (autoBreaksEnabled && brutoMin > 0) {
+        overlap1 = calculateOverlap(minInicio, minFinal, 1415, 1440);
+        overlap2 = calculateOverlap(minInicio, minFinal, 150, 165);
+      }
+
+      document.getElementById('statDescanso1').textContent = `${Math.round(overlap1)} min apl.`;
+      document.getElementById('statDescanso1').className = `font-mono text-xs font-semibold px-3 py-1.5 rounded-lg border ${
+        overlap1 > 0 
+          ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-200 border-indigo-300 dark:border-indigo-800' 
+          : 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+      }`;
+
+      document.getElementById('statDescanso2').textContent = `${Math.round(overlap2)} min apl.`;
+      document.getElementById('statDescanso2').className = `font-mono text-xs font-semibold px-3 py-1.5 rounded-lg border ${
+        overlap2 > 0 
+          ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-200 border-indigo-300 dark:border-indigo-800' 
+          : 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+      }`;
+
+      const numCambios = parseFloat(document.getElementById('inpNumCambios').value) || 0;
+      const minPorCambio = parseFloat(document.getElementById('inpMinPorCambio').value) || 0;
+      const totalCambiosMin = numCambios * minPorCambio;
+
+      const totalDescansosYCambiosMin = overlap1 + overlap2 + totalCambiosMin;
+      document.getElementById('badgeDescansos').textContent = `${Math.round(totalDescansosYCambiosMin)} min`;
+
+      // Net processing time = Gross - Breaks - Batch Changes
+      const netoMin = Math.max(0, brutoMin - totalDescansosYCambiosMin);
+      document.getElementById('resTiempoFinalNeto').textContent = minutesToHHMMSS(netoMin);
+
+      // 4. Breakdown Time KPI (Avería = Gross Real - Theoretical - Active Breaks & Changes)
+      const averiaMin = Math.max(0, brutoMin - teoricoMin - totalDescansosYCambiosMin);
+      document.getElementById('kpiAveriaMin').innerHTML = `${Math.round(averiaMin)} <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">min</span>`;
+      document.getElementById('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} (Excel)`;
+
+      // 5. Effective Real Speed KPI
+      let velReal = 0;
+      if (brutoMin > 0) {
+        velReal = Math.round((tpLote / brutoMin) * 60);
+      }
+      document.getElementById('kpiVelocidadReal').textContent = velReal.toLocaleString();
+    }
+
+    // Secondary Conversion Utility Listeners
+    function convertMinToHours() {
+      const val = parseFloat(document.getElementById('convMinInput').value);
+      if (isNaN(val)) {
+        document.getElementById('convMinResult').textContent = '00:00:00';
+        return;
+      }
+      document.getElementById('convMinResult').textContent = minutesToHHMMSS(val);
+    }
+
+    function convertHoursToMin() {
+      const val = parseFloat(document.getElementById('convHoursInput').value);
+      if (isNaN(val)) {
+        document.getElementById('convHoursResult').textContent = '0 min';
+        return;
+      }
+      document.getElementById('convHoursResult').textContent = `${Math.round(val * 60)} min`;
+    }
+
+    document.getElementById('convMinInput').addEventListener('input', convertMinToHours);
+    document.getElementById('convHoursInput').addEventListener('input', convertHoursToMin);
+
+    // Reset default form values
+    function resetValues() {
+      document.getElementById('inpTpLote').value = 12000;
+      document.getElementById('inpVelTeorica').value = 12000;
+      document.getElementById('inpInicio').value = '21:00';
+      document.getElementById('inpFinal').value = '22:10';
+      document.getElementById('inpNumCambios').value = 0;
+      document.getElementById('inpMinPorCambio').value = 3;
+      document.getElementById('chkAutoBreaks').checked = true;
+      document.getElementById('convMinInput').value = '';
+      document.getElementById('convHoursInput').value = '';
+      document.getElementById('convMinResult').textContent = '00:00:00';
+      document.getElementById('convHoursResult').textContent = '0 min';
+      calculateAll();
+    }
+
+    // Initial calculation run
+    calculateAll();
+  </script>
+</body>
+</html>
