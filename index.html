@@ -101,7 +101,6 @@
       </div>
     </div>
     <div class="flex items-center space-x-1.5 flex-shrink-0 ml-2">
-      <!-- Botón Tema Día / Noche Corregido -->
       <button onclick="toggleTheme()" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition active:scale-95 border border-slate-200 dark:border-slate-800" title="Cambiar Tema">
         <i id="themeIconSun" data-lucide="sun" class="w-4 h-4 text-amber-500 hidden"></i>
         <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4 text-indigo-400"></i>
@@ -121,7 +120,7 @@
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between shadow-sm relative overflow-hidden group panel-shadow transition-colors duration-300 min-w-0">
         <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
         <div class="flex items-center justify-between mb-1">
-          <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">Tiempo de Averia</span>
+          <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">Tiempo Perdido</span>
           <i data-lucide="octagon-alert" class="w-3.5 h-3.5 text-amber-500 dark:text-amber-400 flex-shrink-0"></i>
         </div>
         <div class="truncate">
@@ -156,7 +155,7 @@
       <div class="grid grid-cols-2 gap-2.5">
         <div>
           <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Lote (Aves)</label>
-          <input type="number" id="inpTpLote" value="12000" step="100" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
+          <input type="number" id="inpTpLote" value="" placeholder="Ej: 12000" step="100" inputmode="numeric" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
         </div>
 
         <div>
@@ -164,7 +163,7 @@
           <select id="inpVelTeorica" onchange="calculateAll()" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm appearance-none">
             <option value="12000" selected>12.000 / h</option>
             <option value="11300">11.300 / h</option>
-            <option value="10500">10500 / h</option>
+            <option value="11200">11.200 / h</option>
           </select>
         </div>
       </div>
@@ -172,8 +171,8 @@
       <div class="bg-slate-50 dark:bg-slate-950 rounded-lg p-3 border border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs">
         <span class="text-slate-500 dark:text-slate-400 truncate pr-2">Tiempo Teórico:</span>
         <div class="text-right flex-shrink-0">
-          <span id="resTeoricoMin" class="font-bold text-slate-800 dark:text-slate-200">60 min</span>
-          <span id="resTeoricoHora" class="text-slate-500 dark:text-slate-400 ml-1 font-mono text-[11px]">(01:00:00)</span>
+          <span id="resTeoricoMin" class="font-bold text-slate-800 dark:text-slate-200">0 min</span>
+          <span id="resTeoricoHora" class="text-slate-500 dark:text-slate-400 ml-1 font-mono text-[11px]">(00:00:00)</span>
         </div>
       </div>
     </section>
@@ -194,7 +193,7 @@
             <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate">Inicio</label>
             <button onclick="setNow('inpInicio')" class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-1 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">AHORA</button>
           </div>
-          <input type="text" id="inpInicio" value="21:00" placeholder="HH:MM" inputmode="numeric" maxlength="5" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-2 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 transition text-center text-base" oninput="formatTimeInput(this)" onblur="calculateAll()">
+          <input type="text" id="inpInicio" value="" placeholder="HH:MM" inputmode="numeric" maxlength="5" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-2 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 transition text-center text-base" oninput="formatTimeInput(this)" onblur="calculateAll()">
         </div>
 
         <div>
@@ -202,18 +201,18 @@
             <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate">Final</label>
             <button onclick="setNow('inpFinal')" class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-1 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">AHORA</button>
           </div>
-          <input type="text" id="inpFinal" value="22:10" placeholder="HH:MM" inputmode="numeric" maxlength="5" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-2 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 transition text-center text-base" oninput="formatTimeInput(this)" onblur="calculateAll()">
+          <input type="text" id="inpFinal" value="" placeholder="HH:MM" inputmode="numeric" maxlength="5" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-2 text-slate-900 dark:text-slate-100 font-mono font-semibold focus:outline-none focus:border-emerald-500 transition text-center text-base" oninput="formatTimeInput(this)" onblur="calculateAll()">
         </div>
       </div>
 
       <div class="bg-slate-50 dark:bg-slate-950 rounded-lg p-3 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
         <div class="flex justify-between items-center">
           <span class="text-slate-500 dark:text-slate-400 truncate pr-2">Duración Bruta:</span>
-          <span id="resBruto" class="font-mono font-bold text-slate-800 dark:text-slate-200 flex-shrink-0">01:10:00 (70 min)</span>
+          <span id="resBruto" class="font-mono font-bold text-slate-800 dark:text-slate-200 flex-shrink-0">00:00:00 (0 min)</span>
         </div>
         <div class="flex justify-between items-center border-t border-slate-200 dark:border-slate-800 pt-2">
           <span class="text-slate-500 dark:text-slate-400 truncate pr-2">Vs Teórico:</span>
-          <span id="resDiferencia" class="font-mono font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">+00:10:00 (+10 min)</span>
+          <span id="resDiferencia" class="font-mono font-bold text-slate-800 dark:text-slate-200 flex-shrink-0">+00:00:00 (+0 min)</span>
         </div>
       </div>
     </section>
@@ -274,7 +273,7 @@
 
         <div class="bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800 rounded-lg p-3 text-xs flex justify-between items-center text-indigo-900 dark:text-indigo-200">
           <span class="truncate pr-2">Tiempo Neto Procesamiento:</span>
-          <span id="resTiempoFinalNeto" class="font-mono font-bold text-indigo-700 dark:text-indigo-100 flex-shrink-0">01:10:00</span>
+          <span id="resTiempoFinalNeto" class="font-mono font-bold text-indigo-700 dark:text-indigo-100 flex-shrink-0">00:00:00</span>
         </div>
       </div>
     </section>
@@ -363,7 +362,6 @@
 
     lucide.createIcons();
 
-    // --- CORRECCIÓN DE CONTROL DE TEMA (DÍA / NOCHE) ---
     function toggleTheme() {
       const isDark = document.documentElement.classList.contains('dark');
       setTheme(!isDark);
@@ -386,7 +384,6 @@
       }
     }
 
-    // Inicializar preferencia al cargar la página
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
       setTheme(false);
@@ -478,10 +475,11 @@
     }
 
     function calculateAll() {
-      const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
+      const tpLoteInput = document.getElementById('inpTpLote').value;
+      const tpLote = parseFloat(tpLoteInput) || 0;
       const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
 
-      const teoricoMin = velTeorica > 0 ? (tpLote / velTeorica) * 60 : 0;
+      const teoricoMin = (tpLote > 0 && velTeorica > 0) ? (tpLote / velTeorica) * 60 : 0;
       document.getElementById('resTeoricoMin').textContent = `${Math.round(teoricoMin)} min`;
       document.getElementById('resTeoricoHora').textContent = `(${minutesToHHMMSS(teoricoMin)})`;
 
@@ -491,15 +489,25 @@
       const minInicio = timeToMinutes(inicioStr);
       const minFinal = timeToMinutes(finalStr);
 
-      let brutoMin = minFinal - minInicio;
-      if (brutoMin < 0) brutoMin += 1440;
+      let brutoMin = 0;
+      if (inicioStr && finalStr) {
+        brutoMin = minFinal - minInicio;
+        if (brutoMin < 0) brutoMin += 1440;
+      }
 
       document.getElementById('resBruto').textContent = `${minutesToHHMMSS(brutoMin)} (${Math.round(brutoMin)} min)`;
 
-      const diffMin = brutoMin - teoricoMin;
+      const diffMin = (inicioStr && finalStr && tpLote > 0) ? (brutoMin - teoricoMin) : 0;
       const diffFormatted = (diffMin >= 0 ? '+' : '') + minutesToHHMMSS(diffMin) + ` (${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)} min)`;
       document.getElementById('resDiferencia').textContent = diffFormatted;
-      document.getElementById('resDiferencia').className = `font-mono font-bold ${diffMin > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`;
+      
+      if (diffMin > 0) {
+        document.getElementById('resDiferencia').className = 'font-mono font-bold text-amber-600 dark:text-amber-400 flex-shrink-0';
+      } else if (diffMin < 0) {
+        document.getElementById('resDiferencia').className = 'font-mono font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0';
+      } else {
+        document.getElementById('resDiferencia').className = 'font-mono font-bold text-slate-800 dark:text-slate-200 flex-shrink-0';
+      }
 
       const autoBreaksEnabled = document.getElementById('chkAutoBreaks').checked;
       let overlap1 = 0;
@@ -526,12 +534,15 @@
       const netoMin = Math.max(0, brutoMin - totalDescansosYCambiosMin);
       document.getElementById('resTiempoFinalNeto').textContent = minutesToHHMMSS(netoMin);
 
-      const averiaMin = Math.max(0, brutoMin - teoricoMin - totalDescansosYCambiosMin);
+      let averiaMin = 0;
+      if (brutoMin > 0 && teoricoMin > 0) {
+        averiaMin = Math.max(0, brutoMin - teoricoMin - totalDescansosYCambiosMin);
+      }
       document.getElementById('kpiAveriaMin').innerHTML = `${Math.round(averiaMin)} <span class="text-xs font-normal text-slate-500 dark:text-slate-400">min</span>`;
       document.getElementById('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} (Excel)`;
 
       let velReal = 0;
-      if (brutoMin > 0) {
+      if (brutoMin > 0 && tpLote > 0) {
         velReal = Math.round((tpLote / brutoMin) * 60);
       }
       document.getElementById('kpiVelocidadReal').textContent = velReal.toLocaleString();
@@ -559,10 +570,10 @@
     document.getElementById('convHoursInput').addEventListener('input', convertHoursToMin);
 
     function resetValues() {
-      document.getElementById('inpTpLote').value = 12000;
+      document.getElementById('inpTpLote').value = '';
       document.getElementById('inpVelTeorica').value = 12000;
-      document.getElementById('inpInicio').value = '21:00';
-      document.getElementById('inpFinal').value = '22:10';
+      document.getElementById('inpInicio').value = '';
+      document.getElementById('inpFinal').value = '';
       document.getElementById('inpNumCambios').value = 0;
       document.getElementById('inpMinPorCambio').value = 3;
       document.getElementById('chkAutoBreaks').checked = true;
