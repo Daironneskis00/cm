@@ -13,7 +13,7 @@
   <meta name="description" content="Sistema industrial de cálculo de tiempos, rendimiento de línea, averías y OEE para muelle.">
 
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⏱️</text></svg>">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⏱️️</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⏱</text></svg>">
 
   <script>
     const manifestData = {
@@ -74,7 +74,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    input, select { font-size: 16px !important; }
+    html { font-size: 85%; }
+    input, select { font-size: 14px !important; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
@@ -110,10 +111,7 @@
         <i data-lucide="cpu" class="w-5 h-5"></i>
       </div>
       <div class="truncate">
-        <div class="flex items-center space-x-2">
-          <h1 class="font-extrabold text-base sm:text-xl leading-tight text-slate-900 dark:text-white truncate tracking-tight">Muelle Control Pro</h1>
-          <span class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 hidden sm:inline-block">HMI 4.0</span>
-        </div>
+        <h1 class="font-extrabold text-base sm:text-xl leading-tight text-slate-900 dark:text-white truncate tracking-tight">Muelle Control Pro</h1>
         <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate tracking-wide">Monitorización & Análisis OEE de Rendimiento</p>
       </div>
     </div>
@@ -433,7 +431,7 @@
         </div>
       </div>
 
-      <!-- Lista de Lotes Registrados -->
+      <!-- Lista de Lotes Registrados (Jerarquía visual clara) -->
       <div id="listaHistorial" class="space-y-2 max-h-60 overflow-y-auto pr-1">
         <p class="text-xs text-slate-400 text-center py-4 italic">No hay lotes guardados en este turno.</p>
       </div>
@@ -466,7 +464,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE_NAME = 'calculo-muelle-pro-v7';
+        const CACHE_NAME = 'calculo-muelle-pro-v8';
         self.addEventListener('install', (e) => { self.skipWaiting(); });
         self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
         self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
@@ -887,8 +885,15 @@
         const card = document.createElement('div');
         card.className = 'flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50/80 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition shadow-sm';
         card.innerHTML = `
-          <div class="space-y-0.5 truncate pr-2">
-            <div class="font-bold text-slate-900 dark:text-slate-100 truncate">${item.nombre}: ${item.lote.toLocaleString()} aves</div>
+          <div class="space-y-1.5 truncate pr-2">
+            <div class="flex items-center space-x-2 truncate">
+              <span class="bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-md font-extrabold text-[11px] uppercase tracking-wider flex-shrink-0">
+                ${item.nombre}
+              </span>
+              <span class="font-extrabold text-slate-900 dark:text-slate-100 text-sm truncate">
+                ${item.lote.toLocaleString()} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">aves</span>
+              </span>
+            </div>
             <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
               ${item.inicio} a ${item.final} (${item.brutoMin} min) | Vel. Real: ${item.velReal.toLocaleString()}
             </div>
