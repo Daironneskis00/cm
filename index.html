@@ -152,10 +152,10 @@
         <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 flex-shrink-0">Teórico</span>
       </div>
 
-      <!-- CAMPO NÚMERO / NOMBRE DE LOTE -->
+      <!-- CAMPO NÚMERO DE LOTE (TECLADO EXCLUSIVAMENTE NUMÉRICO) -->
       <div>
-        <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Nº / Nombre de Lote (Opcional)</label>
-        <input type="text" id="inpNombreLote" value="" placeholder="Ej: Lote 12, Lote A..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
+        <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Nº de Lote (Opcional)</label>
+        <input type="number" id="inpNombreLote" value="" placeholder="Ej: 1, 2, 501..." inputmode="numeric" step="1" min="1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
       </div>
 
       <div class="grid grid-cols-2 gap-2.5">
@@ -426,7 +426,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE_NAME = 'calculo-muelle-v3';
+        const CACHE_NAME = 'calculo-muelle-v4';
         self.addEventListener('install', (e) => { self.skipWaiting(); });
         self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
         self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
@@ -735,15 +735,15 @@
       const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
       const inicio = document.getElementById('inpInicio').value;
       const final = document.getElementById('inpFinal').value;
-      const nombreInput = document.getElementById('inpNombreLote').value.trim();
+      const numInput = document.getElementById('inpNombreLote').value.trim();
 
       if (tpLote <= 0 || !inicio || !final) {
         alert("Por favor, introduce la cantidad de aves y las horas de inicio y fin.");
         return;
       }
 
-      // Asignar identificador: si no introduce texto, usar el número de lote según el historial
-      const nombreLote = nombreInput ? nombreInput : `Lote ${historialLotes.length + 1}`;
+      // Nombre final formateado según si introdujo número o si es automático
+      const nombreLote = numInput ? `Lote ${numInput}` : `Lote ${historialLotes.length + 1}`;
 
       const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
       const teoricoMin = (tpLote / velTeorica) * 60;
@@ -888,7 +888,7 @@
         return;
       }
 
-      let csv = "Identificador,Aves,Inicio,Fin,Duracion_Bruta_Min,Averia_Min,Velocidad_Real,Velocidad_Teorica\n";
+      let csv = "Numero_Lote,Aves,Inicio,Fin,Duracion_Bruta_Min,Averia_Min,Velocidad_Real,Velocidad_Teorica\n";
       historialLotes.forEach((item) => {
         csv += `"${item.nombre}",${item.lote},${item.inicio},${item.final},${item.brutoMin},${item.averiaMin},${item.velReal},${item.velTeorica}\n`;
       });
