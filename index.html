@@ -106,7 +106,7 @@
         <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4 text-indigo-400"></i>
       </button>
 
-      <button onclick="resetValues()" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition active:scale-95 border border-slate-200 dark:border-slate-800" title="Restablecer">
+      <button onclick="resetValues()" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition active:scale-95 border border-slate-200 dark:border-slate-800" title="Restablecer Formulario">
         <i data-lucide="refresh-cw" class="w-4 h-4"></i>
       </button>
     </div>
@@ -152,9 +152,15 @@
         <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 flex-shrink-0">Teórico</span>
       </div>
 
+      <!-- CAMPO NÚMERO / NOMBRE DE LOTE -->
+      <div>
+        <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Nº / Nombre de Lote (Opcional)</label>
+        <input type="text" id="inpNombreLote" value="" placeholder="Ej: Lote 12, Lote A..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
+      </div>
+
       <div class="grid grid-cols-2 gap-2.5">
         <div>
-          <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Lote (Aves)</label>
+          <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Cantidad (Aves)</label>
           <input type="number" id="inpTpLote" value="" placeholder="Ej: 12000" step="100" inputmode="numeric" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-2 text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-indigo-500 transition text-sm" oninput="calculateAll()">
         </div>
 
@@ -215,6 +221,12 @@
           <span id="resDiferencia" class="font-mono font-bold text-slate-800 dark:text-slate-200 flex-shrink-0">+00:00:00 (+0 min)</span>
         </div>
       </div>
+
+      <!-- BOTÓN GUARDAR LOTE EN HISTORIAL -->
+      <button onclick="guardarLoteEnHistorial()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-emerald-600/20 active:scale-[0.99] transition flex items-center justify-center space-x-2 text-xs uppercase tracking-wider">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+        <span>Guardar Lote en Historial</span>
+      </button>
     </section>
 
     <!-- ACCORDION 1: Descansos -->
@@ -352,6 +364,53 @@
       </div>
     </section>
 
+    <!-- HISTORIAL DEL TURNO -->
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-4 shadow-sm space-y-3.5 panel-shadow transition-colors duration-300">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+        <div class="flex items-center space-x-2 truncate">
+          <i data-lucide="history" class="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0"></i>
+          <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">Resumen del Turno</h2>
+        </div>
+        <button onclick="limpiarHistorial()" class="text-[10px] text-rose-600 dark:text-rose-400 hover:underline flex items-center space-x-1">
+          <i data-lucide="trash-2" class="w-3 h-3"></i>
+          <span>Borrar Historial</span>
+        </button>
+      </div>
+
+      <!-- Métricas del Turno -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800">
+          <div class="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 truncate">Aves Totales</div>
+          <div id="histTotalAves" class="text-base font-black text-slate-900 dark:text-white truncate">0</div>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800">
+          <div class="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 truncate">Avería Acum.</div>
+          <div id="histTotalAveria" class="text-base font-black text-amber-600 dark:text-amber-400 truncate">0 min</div>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800">
+          <div class="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 truncate">Nº Lotes</div>
+          <div id="histTotalLotes" class="text-base font-black text-indigo-600 dark:text-indigo-400 truncate">0</div>
+        </div>
+      </div>
+
+      <!-- Lista de Lotes Registrados -->
+      <div id="listaHistorial" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+        <p class="text-xs text-slate-400 text-center py-3 italic">No hay lotes guardados en este turno.</p>
+      </div>
+
+      <!-- Acciones de Exportación -->
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button onclick="copiarResumenWhatsApp()" class="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900 font-bold py-2 px-3 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copiar Formateado</span>
+        </button>
+        <button onclick="exportarCSV()" class="bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 font-bold py-2 px-3 rounded-lg text-xs transition flex items-center justify-center space-x-1.5">
+          <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+          <span>Exportar a CSV</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Notas -->
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-500 dark:text-slate-400 space-y-1.5 panel-shadow transition-colors duration-300">
       <div class="font-semibold text-slate-800 dark:text-slate-200 flex items-center space-x-2 mb-1">
@@ -367,7 +426,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE_NAME = 'calculo-muelle-v1';
+        const CACHE_NAME = 'calculo-muelle-v3';
         self.addEventListener('install', (e) => { self.skipWaiting(); });
         self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
         self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
@@ -516,6 +575,7 @@
       return totalOverlap;
     }
 
+    // --- CÁLCULOS Y PERSISTENCIA DE DATOS (LOCALSTORAGE) ---
     function calculateAll() {
       const tpLoteInput = document.getElementById('inpTpLote').value;
       const tpLote = parseFloat(tpLoteInput) || 0;
@@ -557,11 +617,8 @@
       let overlap3 = 0;
 
       if (autoBreaksEnabled && brutoMin > 0) {
-        // Descanso 1: 23:35 a 00:00 (1415 min a 1440 min)
         overlap1 = calculateOverlap(minInicio, minFinal, 1415, 1440);
-        // Descanso 2: 02:30 a 02:45 (150 min a 165 min)
         overlap2 = calculateOverlap(minInicio, minFinal, 150, 165);
-        // Descanso 3: 05:00 a 05:07 (300 min a 307 min)
         overlap3 = calculateOverlap(minInicio, minFinal, 300, 307);
       }
 
@@ -617,6 +674,233 @@
       document.getElementById('legAveria').textContent = `${Math.round(averiaMin)}m`;
 
       document.getElementById('chartEffPercent').textContent = `${Math.round(pctTeorico)}% Útil`;
+
+      // Guardar formulario en LocalStorage
+      guardarFormularioLocalStorage();
+    }
+
+    function guardarFormularioLocalStorage() {
+      const dataState = {
+        inpNombreLote: document.getElementById('inpNombreLote').value,
+        inpTpLote: document.getElementById('inpTpLote').value,
+        inpVelTeorica: document.getElementById('inpVelTeorica').value,
+        inpInicio: document.getElementById('inpInicio').value,
+        inpFinal: document.getElementById('inpFinal').value,
+        inpNumCambios: document.getElementById('inpNumCambios').value,
+        inpMinPorCambio: document.getElementById('inpMinPorCambio').value,
+        chkAutoBreaks: document.getElementById('chkAutoBreaks').checked
+      };
+      localStorage.setItem('calculo_muelle_formState', JSON.stringify(dataState));
+    }
+
+    function cargarFormularioLocalStorage() {
+      const saved = localStorage.getItem('calculo_muelle_formState');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          if (data.inpNombreLote !== undefined) document.getElementById('inpNombreLote').value = data.inpNombreLote;
+          if (data.inpTpLote !== undefined) document.getElementById('inpTpLote').value = data.inpTpLote;
+          if (data.inpVelTeorica !== undefined) document.getElementById('inpVelTeorica').value = data.inpVelTeorica;
+          if (data.inpInicio !== undefined) document.getElementById('inpInicio').value = data.inpInicio;
+          if (data.inpFinal !== undefined) document.getElementById('inpFinal').value = data.inpFinal;
+          if (data.inpNumCambios !== undefined) document.getElementById('inpNumCambios').value = data.inpNumCambios;
+          if (data.inpMinPorCambio !== undefined) document.getElementById('inpMinPorCambio').value = data.inpMinPorCambio;
+          if (data.chkAutoBreaks !== undefined) document.getElementById('chkAutoBreaks').checked = data.chkAutoBreaks;
+        } catch(e) {
+          console.error("Error al cargar localStorage", e);
+        }
+      }
+    }
+
+    // --- GESTIÓN DEL HISTORIAL DEL TURNO ---
+    let historialLotes = [];
+
+    function cargarHistorialLocalStorage() {
+      const saved = localStorage.getItem('calculo_muelle_historial');
+      if (saved) {
+        try {
+          historialLotes = JSON.parse(saved) || [];
+        } catch(e) {
+          historialLotes = [];
+        }
+      }
+      renderHistorial();
+    }
+
+    function guardarHistorialLocalStorage() {
+      localStorage.setItem('calculo_muelle_historial', JSON.stringify(historialLotes));
+    }
+
+    function guardarLoteEnHistorial() {
+      const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
+      const inicio = document.getElementById('inpInicio').value;
+      const final = document.getElementById('inpFinal').value;
+      const nombreInput = document.getElementById('inpNombreLote').value.trim();
+
+      if (tpLote <= 0 || !inicio || !final) {
+        alert("Por favor, introduce la cantidad de aves y las horas de inicio y fin.");
+        return;
+      }
+
+      // Asignar identificador: si no introduce texto, usar el número de lote según el historial
+      const nombreLote = nombreInput ? nombreInput : `Lote ${historialLotes.length + 1}`;
+
+      const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
+      const teoricoMin = (tpLote / velTeorica) * 60;
+      
+      const minInicio = timeToMinutes(inicio);
+      const minFinal = timeToMinutes(final);
+      let brutoMin = minFinal - minInicio;
+      if (brutoMin < 0) brutoMin += 1440;
+
+      const autoBreaksEnabled = document.getElementById('chkAutoBreaks').checked;
+      let overlap1 = autoBreaksEnabled ? calculateOverlap(minInicio, minFinal, 1415, 1440) : 0;
+      let overlap2 = autoBreaksEnabled ? calculateOverlap(minInicio, minFinal, 150, 165) : 0;
+      let overlap3 = autoBreaksEnabled ? calculateOverlap(minInicio, minFinal, 300, 307) : 0;
+
+      const numCambios = parseFloat(document.getElementById('inpNumCambios').value) || 0;
+      const minPorCambio = parseFloat(document.getElementById('inpMinPorCambio').value) || 0;
+      const totalCambiosMin = numCambios * minPorCambio;
+
+      const totalDescansosYCambiosMin = overlap1 + overlap2 + overlap3 + totalCambiosMin;
+
+      let averiaMin = 0;
+      if (brutoMin > 0 && teoricoMin > 0) {
+        averiaMin = Math.max(0, brutoMin - teoricoMin - totalDescansosYCambiosMin);
+      }
+
+      let velReal = brutoMin > 0 ? Math.round((tpLote / brutoMin) * 60) : 0;
+
+      const nuevoLote = {
+        id: Date.now(),
+        nombre: nombreLote,
+        lote: tpLote,
+        inicio,
+        final,
+        brutoMin: Math.round(brutoMin),
+        averiaMin: Math.round(averiaMin),
+        velReal,
+        velTeorica
+      };
+
+      historialLotes.push(nuevoLote);
+      guardarHistorialLocalStorage();
+      renderHistorial();
+
+      // Preparar para el siguiente lote
+      document.getElementById('inpNombreLote').value = '';
+      document.getElementById('inpTpLote').value = '';
+      document.getElementById('inpInicio').value = final; // El final del anterior suele ser el inicio del nuevo
+      document.getElementById('inpFinal').value = '';
+      calculateAll();
+    }
+
+    function borrarLoteHistorial(id) {
+      historialLotes = historialLotes.filter(item => item.id !== id);
+      guardarHistorialLocalStorage();
+      renderHistorial();
+    }
+
+    function limpiarHistorial() {
+      if (confirm("¿Estás seguro de que deseas borrar todo el historial del turno?")) {
+        historialLotes = [];
+        guardarHistorialLocalStorage();
+        renderHistorial();
+      }
+    }
+
+    function renderHistorial() {
+      const container = document.getElementById('listaHistorial');
+      let totalAves = 0;
+      let totalAveria = 0;
+
+      if (historialLotes.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-3 italic">No hay lotes guardados en este turno.</p>';
+        document.getElementById('histTotalAves').textContent = '0';
+        document.getElementById('histTotalAveria').textContent = '0 min';
+        document.getElementById('histTotalLotes').textContent = '0';
+        return;
+      }
+
+      container.innerHTML = '';
+      historialLotes.forEach((item) => {
+        totalAves += item.lote;
+        totalAveria += item.averiaMin;
+
+        const card = document.createElement('div');
+        card.className = 'flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800';
+        card.innerHTML = `
+          <div class="space-y-0.5 truncate pr-2">
+            <div class="font-bold text-slate-800 dark:text-slate-200 truncate">${item.nombre}: ${item.lote.toLocaleString()} aves</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+              ${item.inicio} a ${item.final} (${item.brutoMin} min) | Vel. Real: ${item.velReal.toLocaleString()}
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${item.averiaMin > 0 ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800' : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'}">
+              ${item.averiaMin}m avería
+            </span>
+            <button onclick="borrarLoteHistorial(${item.id})" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="x-circle" class="w-4 h-4"></i></button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById('histTotalAves').textContent = totalAves.toLocaleString();
+      document.getElementById('histTotalAveria').textContent = `${totalAveria} min`;
+      document.getElementById('histTotalLotes').textContent = historialLotes.length;
+      lucide.createIcons();
+    }
+
+    function copiarResumenWhatsApp() {
+      if (historialLotes.length === 0) {
+        alert("No hay ningún lote en el historial para copiar.");
+        return;
+      }
+
+      let totalAves = 0;
+      let totalAveria = 0;
+
+      let texto = `📊 *RESUMEN DEL TURNO - MUELLE*\n`;
+      texto += `------------------------------------\n`;
+
+      historialLotes.forEach((item) => {
+        totalAves += item.lote;
+        totalAveria += item.averiaMin;
+        texto += `🔹 *${item.nombre}:* ${item.lote.toLocaleString()} aves | ${item.inicio} - ${item.final} | Avería: ${item.averiaMin} min\n`;
+      });
+
+      texto += `------------------------------------\n`;
+      texto += `TOTAL AVES: *${totalAves.toLocaleString()}*\n`;
+      texto += `TOTAL AVERÍAS: *${totalAveria} min*\n`;
+      texto += `Nº LOTES: *${historialLotes.length}*\n`;
+
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("¡Resumen del turno copiado al portapapeles!");
+      }).catch(err => {
+        console.error("Error al copiar texto", err);
+      });
+    }
+
+    function exportarCSV() {
+      if (historialLotes.length === 0) {
+        alert("No hay lotes en el historial para exportar.");
+        return;
+      }
+
+      let csv = "Identificador,Aves,Inicio,Fin,Duracion_Bruta_Min,Averia_Min,Velocidad_Real,Velocidad_Teorica\n";
+      historialLotes.forEach((item) => {
+        csv += `"${item.nombre}",${item.lote},${item.inicio},${item.final},${item.brutoMin},${item.averiaMin},${item.velReal},${item.velTeorica}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Resumen_Turno_Muelle_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function convertMinToHours() {
@@ -641,6 +925,7 @@
     document.getElementById('convHoursInput').addEventListener('input', convertHoursToMin);
 
     function resetValues() {
+      document.getElementById('inpNombreLote').value = '';
       document.getElementById('inpTpLote').value = '';
       document.getElementById('inpVelTeorica').value = 12000;
       document.getElementById('inpInicio').value = '';
@@ -652,9 +937,13 @@
       document.getElementById('convHoursInput').value = '';
       document.getElementById('convMinResult').textContent = '00:00:00';
       document.getElementById('convHoursResult').textContent = '0 min';
+      localStorage.removeItem('calculo_muelle_formState');
       calculateAll();
     }
 
+    // Inicialización al cargar la pantalla
+    cargarFormularioLocalStorage();
+    cargarHistorialLocalStorage();
     calculateAll();
   </script>
 </body>
