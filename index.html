@@ -260,6 +260,14 @@
           <span id="statDescanso2" class="font-mono text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded border border-slate-300 dark:border-slate-700 flex-shrink-0">0 min apl.</span>
         </div>
 
+        <div class="flex items-center justify-between text-xs p-3 rounded-lg bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800">
+          <div class="space-y-0.5 truncate pr-2">
+            <div class="font-semibold text-slate-800 dark:text-slate-200 truncate">Descanso 3 (7 min)</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded inline-block">05:00 a 05:07</div>
+          </div>
+          <span id="statDescanso3" class="font-mono text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded border border-slate-300 dark:border-slate-700 flex-shrink-0">0 min apl.</span>
+        </div>
+
         <div class="grid grid-cols-2 gap-2.5 pt-0.5">
           <div>
             <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wide truncate">Nº Cambios</label>
@@ -546,10 +554,15 @@
       const autoBreaksEnabled = document.getElementById('chkAutoBreaks').checked;
       let overlap1 = 0;
       let overlap2 = 0;
+      let overlap3 = 0;
 
       if (autoBreaksEnabled && brutoMin > 0) {
+        // Descanso 1: 23:35 a 00:00 (1415 min a 1440 min)
         overlap1 = calculateOverlap(minInicio, minFinal, 1415, 1440);
+        // Descanso 2: 02:30 a 02:45 (150 min a 165 min)
         overlap2 = calculateOverlap(minInicio, minFinal, 150, 165);
+        // Descanso 3: 05:00 a 05:07 (300 min a 307 min)
+        overlap3 = calculateOverlap(minInicio, minFinal, 300, 307);
       }
 
       document.getElementById('statDescanso1').textContent = `${Math.round(overlap1)} min apl.`;
@@ -558,11 +571,14 @@
       document.getElementById('statDescanso2').textContent = `${Math.round(overlap2)} min apl.`;
       document.getElementById('statDescanso2').className = `font-mono text-[10px] font-semibold px-2 py-1 rounded border ${overlap2 > 0 ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-200 border-indigo-300 dark:border-indigo-800' : 'text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700'}`;
 
+      document.getElementById('statDescanso3').textContent = `${Math.round(overlap3)} min apl.`;
+      document.getElementById('statDescanso3').className = `font-mono text-[10px] font-semibold px-2 py-1 rounded border ${overlap3 > 0 ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-200 border-indigo-300 dark:border-indigo-800' : 'text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700'}`;
+
       const numCambios = parseFloat(document.getElementById('inpNumCambios').value) || 0;
       const minPorCambio = parseFloat(document.getElementById('inpMinPorCambio').value) || 0;
       const totalCambiosMin = numCambios * minPorCambio;
 
-      const totalDescansosYCambiosMin = overlap1 + overlap2 + totalCambiosMin;
+      const totalDescansosYCambiosMin = overlap1 + overlap2 + overlap3 + totalCambiosMin;
       document.getElementById('badgeDescansos').textContent = `${Math.round(totalDescansosYCambiosMin)} min`;
 
       const netoMin = Math.max(0, brutoMin - totalDescansosYCambiosMin);
