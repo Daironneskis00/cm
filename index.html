@@ -446,9 +446,9 @@
 
       <!-- Acciones de Exportación -->
       <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button onclick="copiarResumenWhatsApp()" class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 font-bold py-2.5 px-3 rounded-xl text-xs transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-sm">
+        <button onclick="copiarTablaPortapapeles()" class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 font-bold py-2.5 px-3 rounded-xl text-xs transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-sm">
           <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-          <span>Copiar Formateado</span>
+          <span>Copiar Tabla</span>
         </button>
         <button onclick="exportarDocumento()" class="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 font-bold py-2.5 px-3 rounded-xl text-xs transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-sm">
           <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
@@ -959,35 +959,73 @@
       lucide.createIcons();
     }
 
-    function copiarResumenWhatsApp() {
+    // --- NUEVO: FUNCIÓN PARA COPIAR TABLA AL PORTAPAPELES ---
+    function copiarTablaPortapapeles() {
       if (historialLotes.length === 0) {
-        alert("No hay ningún lote en el historial para copiar.");
+        alert("No hay lotes en el historial para copiar.");
         return;
       }
 
-      let totalAves = 0;
-      let totalAveria = 0;
+      // Creamos la tabla en HTML
+      let tablaHTML = `
+        <table style="border-collapse: collapse; width: 100%; font-family: sans-serif;">
+          <tr>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Nº Lote</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Aves</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Inicio</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Fin</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Duración Bruta (min)</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Avería (min)</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Velocidad Real</th>
+            <th style="border: 1px solid #dddddd; background-color: #4f46e5; color: white; padding: 8px;">Velocidad Teórica</th>
+          </tr>
+      `;
 
-      let texto = `📊 *INFORME DE TURNO - MUELLE DE PRODUCCIÓN*\n`;
-      texto += `------------------------------------\n`;
+      // También creamos una versión en texto plano separada por tabulaciones para compatibilidad
+      let textoPlano = "Nº Lote\tAves\tInicio\tFin\tDuración Bruta (min)\tAvería (min)\tVelocidad Real\tVelocidad Teórica\n";
 
       historialLotes.forEach((item) => {
-        totalAves += item.lote;
-        totalAveria += item.averiaMin;
         const displayNumLote = item.numLote || (item.nombre ? item.nombre.replace(/Lote /g, '') : '?');
-        texto += `🔹 *LOTE Nº ${displayNumLote}* ➔ ${item.lote.toLocaleString()} aves | ${item.inicio}-${item.final} | Avería: ${item.averiaMin} min\n`;
+        
+        tablaHTML += `
+          <tr>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${displayNumLote}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.lote}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.inicio}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.final}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.brutoMin}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.averiaMin}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.velReal}</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center;">${item.velTeorica}</td>
+          </tr>
+        `;
+        textoPlano += `${displayNumLote}\t${item.lote}\t${item.inicio}\t${item.final}\t${item.brutoMin}\t${item.averiaMin}\t${item.velReal}\t${item.velTeorica}\n`;
       });
 
-      texto += `------------------------------------\n`;
-      texto += `TOTAL AVES: *${totalAves.toLocaleString()}*\n`;
-      texto += `TOTAL AVERÍAS: *${totalAveria} min*\n`;
-      texto += `Nº LOTES COMPLETADOS: *${historialLotes.length}*\n`;
+      tablaHTML += `</table>`;
 
-      navigator.clipboard.writeText(texto).then(() => {
-        alert("¡Resumen de producción copiado al portapapeles!");
-      }).catch(err => {
-        console.error("Error al copiar texto", err);
-      });
+      // Usamos la API ClipboardItem para meter HTML y Texto Plano al portapapeles
+      try {
+        const clipboardItem = new ClipboardItem({
+          "text/html": new Blob([tablaHTML], { type: "text/html" }),
+          "text/plain": new Blob([textoPlano], { type: "text/plain" })
+        });
+        navigator.clipboard.write([clipboardItem]).then(() => {
+          alert("¡Tabla copiada al portapapeles! Abre Excel o Sheets y pégala.");
+        }).catch(err => {
+          console.error("Error al copiar formato rico", err);
+          fallbackCopy(textoPlano);
+        });
+      } catch (e) {
+         // Si el navegador es antiguo o no soporta ClipboardItem, usamos texto plano
+         fallbackCopy(textoPlano);
+      }
+    }
+
+    function fallbackCopy(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("¡Datos copiados al portapapeles! Pégalo en Excel.");
+        }).catch(err => alert("Error al copiar los datos."));
     }
 
     function exportarDocumento() {
