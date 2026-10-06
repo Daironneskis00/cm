@@ -621,7 +621,27 @@
       return totalOverlap;
     }
 
-    // --- CÁLCULOS Y PERSISTENCIA DE DATOS (LOCALSTORAGE) ---
+    function getColorForLote(loteStr) {
+      const colors = [
+        'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300',     
+        'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300', 
+        'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',         
+        'bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300',             
+        'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300',                 
+        'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300',     
+        'bg-fuchsia-100 dark:bg-fuchsia-900/50 text-fuchsia-700 dark:text-fuchsia-300'  
+      ];
+      
+      let hash = 0;
+      for (let i = 0; i < loteStr.length; i++) {
+        hash = loteStr.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      
+      const index = Math.abs(hash) % colors.length;
+      return colors[index];
+    }
+
+    // --- CÁLCULOS Y PERSISTENCIA DE DATOS ---
     function calculateAll() {
       const tpLoteInput = document.getElementById('inpTpLote').value;
       const tpLote = parseFloat(tpLoteInput) || 0;
@@ -700,21 +720,36 @@
       }
       document.getElementById('kpiVelocidadReal').textContent = velReal.toLocaleString();
 
-      // --- PREDICCIÓN HORA DE FINALIZACIÓN ESTIMADA (ETA) ---
+      // --- PREDICCIÓN HORA DE FINALIZACIÓN ESTIMADA (ETA) CORREGIDA ---
+      // Simula el paso del tiempo minuto a minuto, deteniéndose cuando entra en un descanso
       if (inicioStr && tpLote > 0) {
-        let estMinutosTotal = teoricoMin + totalCambiosMin;
-        let estMinFin = (minInicio + estMinutosTotal) % 1440;
-        
-        // Comprobar descansos previstos en ese rango
-        if (autoBreaksEnabled) {
-          let extraDescanso = calculateOverlap(minInicio, (minInicio + estMinutosTotal) % 1440, 1415, 1440) +
-                              calculateOverlap(minInicio, (minInicio + estMinutosTotal) % 1440, 150, 165) +
-                              calculateOverlap(minInicio, (minInicio + estMinutosTotal) % 1440, 300, 307);
-          estMinFin = (estMinFin + extraDescanso) % 1440;
+        let estMinutosTotal = Math.round(teoricoMin + totalCambiosMin);
+        let minActual = minInicio;
+        let minutosTrabajados = 0;
+        let limitador = 0; // Evita bucles infinitos en caso extremo
+
+        while (minutosTrabajados < estMinutosTotal && limitador < 2880) { // Máximo 48h de simulación
+          let isBreak = false;
+          
+          if (autoBreaksEnabled) {
+            if (minActual >= 1415 && minActual < 1440) isBreak = true; // 23:35 a 00:00
+            else if (minActual >= 150 && minActual < 165) isBreak = true; // 02:30 a 02:45
+            else if (minActual >= 300 && minActual < 307) isBreak = true; // 05:00 a 05:07
+          }
+
+          if (isBreak) {
+            // Es descanso, el reloj avanza pero NO sumamos trabajo
+            minActual = (minActual + 1) % 1440;
+          } else {
+            // Se trabaja de verdad, sumamos progreso y el reloj avanza
+            minutosTrabajados++;
+            minActual = (minActual + 1) % 1440;
+          }
+          limitador++;
         }
 
-        const hrsEst = String(Math.floor(estMinFin / 60)).padStart(2, '0');
-        const minsEst = String(Math.floor(estMinFin % 60)).padStart(2, '0');
+        const hrsEst = String(Math.floor(minActual / 60)).padStart(2, '0');
+        const minsEst = String(Math.floor(minActual % 60)).padStart(2, '0');
         document.getElementById('resHoraFinEstimada').textContent = `${hrsEst}:${minsEst}`;
       } else {
         document.getElementById('resHoraFinEstimada').textContent = '--:--';
@@ -838,7 +873,7 @@
       const nuevoLote = {
         id: Date.now(),
         numLote: numLoteStr,
-        nombre: `Lote ${numLoteStr}`, // Por si se exporta con la versión antigua en localStorage
+        nombre: `Lote ${numLoteStr}`, 
         lote: tpLote,
         inicio,
         final,
@@ -892,15 +927,15 @@
         totalAves += item.lote;
         totalAveria += item.averiaMin;
 
-        // Soporte retroactivo si hay datos viejos en el localstorage sin "numLote"
         const displayNumLote = item.numLote || (item.nombre ? item.nombre.replace(/Lote /g, '') : '?');
+        const badgeColorClass = getColorForLote(displayNumLote);
 
         const card = document.createElement('div');
         card.className = 'flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50/80 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition shadow-sm';
         card.innerHTML = `
           <div class="space-y-1 truncate pr-2">
             <div class="font-bold text-slate-900 dark:text-slate-100 truncate flex items-center space-x-2">
-              <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded text-[10px] tracking-wide uppercase">Lote Nº ${displayNumLote}</span>
+              <span class="${badgeColorClass} px-1.5 py-0.5 rounded text-[10px] tracking-wide uppercase">Lote Nº ${displayNumLote}</span>
               <span class="text-slate-400 dark:text-slate-500">➔</span>
               <span>${item.lote.toLocaleString()} aves</span>
             </div>
@@ -961,7 +996,6 @@
         return;
       }
 
-      // Creamos una tabla HTML bien formateada
       let tablaHTML = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
         <head>
@@ -1008,7 +1042,6 @@
         </html>
       `;
 
-      // Lo guardamos con formato Excel (.xls) para que Google Drive lo interprete como tabla automáticamente
       const blob = new Blob([tablaHTML], { type: 'application/vnd.ms-excel;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
