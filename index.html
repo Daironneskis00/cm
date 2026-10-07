@@ -728,7 +728,6 @@
       document.getElementById('kpiVelocidadReal').textContent = velReal.toLocaleString();
 
       // --- PREDICCIÓN HORA DE FINALIZACIÓN ESTIMADA (ETA) CORREGIDA ---
-      // Simula el paso del tiempo minuto a minuto, deteniéndose cuando entra en un descanso
       if (inicioStr && tpLote > 0) {
         let estMinutosTotal = Math.round(teoricoMin + totalCambiosMin);
         let minActual = minInicio;
@@ -966,14 +965,16 @@
       lucide.createIcons();
     }
 
-    // --- NUEVO: FUNCIÓN PARA COPIAR TABLA AL PORTAPAPELES ---
+    // --- FUNCIÓN PARA COPIAR TABLA AL PORTAPAPELES (CON TOTALES) ---
     function copiarTablaPortapapeles() {
       if (historialLotes.length === 0) {
         alert("No hay lotes en el historial para copiar.");
         return;
       }
 
-      // Creamos la tabla en HTML
+      let totalAves = 0;
+      let totalAveria = 0;
+
       let tablaHTML = `
         <table style="border-collapse: collapse; width: 100%; font-family: sans-serif;">
           <tr>
@@ -988,10 +989,11 @@
           </tr>
       `;
 
-      // También creamos una versión en texto plano separada por tabulaciones para compatibilidad
       let textoPlano = "Nº Lote\tAves\tInicio\tFin\tDuración Bruta (min)\tAvería (min)\tVelocidad Real\tVelocidad Teórica\n";
 
       historialLotes.forEach((item) => {
+        totalAves += item.lote;
+        totalAveria += item.averiaMin;
         const displayNumLote = item.numLote || (item.nombre ? item.nombre.replace(/Lote /g, '') : '?');
         
         tablaHTML += `
@@ -1009,9 +1011,22 @@
         textoPlano += `${displayNumLote}\t${item.lote}\t${item.inicio}\t${item.final}\t${item.brutoMin}\t${item.averiaMin}\t${item.velReal}\t${item.velTeorica}\n`;
       });
 
-      tablaHTML += `</table>`;
+      // Añadir la fila final de totales
+      tablaHTML += `
+          <tr>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: right; font-weight: bold; background-color: #f3f4f6;">TOTALES:</td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center; font-weight: bold; background-color: #f3f4f6;">${totalAves.toLocaleString()}</td>
+            <td style="border: 1px solid #dddddd; background-color: #f3f4f6;"></td>
+            <td style="border: 1px solid #dddddd; background-color: #f3f4f6;"></td>
+            <td style="border: 1px solid #dddddd; background-color: #f3f4f6;"></td>
+            <td style="border: 1px solid #dddddd; padding: 8px; text-align: center; font-weight: bold; background-color: #f3f4f6;">${totalAveria}</td>
+            <td style="border: 1px solid #dddddd; background-color: #f3f4f6;"></td>
+            <td style="border: 1px solid #dddddd; background-color: #f3f4f6;"></td>
+          </tr>
+        </table>
+      `;
+      textoPlano += `TOTALES:\t${totalAves}\t\t\t\t${totalAveria}\t\t\n`;
 
-      // Usamos la API ClipboardItem para meter HTML y Texto Plano al portapapeles
       try {
         const clipboardItem = new ClipboardItem({
           "text/html": new Blob([tablaHTML], { type: "text/html" }),
@@ -1024,7 +1039,6 @@
           fallbackCopy(textoPlano);
         });
       } catch (e) {
-         // Si el navegador es antiguo o no soporta ClipboardItem, usamos texto plano
          fallbackCopy(textoPlano);
       }
     }
@@ -1035,11 +1049,15 @@
         }).catch(err => alert("Error al copiar los datos."));
     }
 
+    // --- FUNCIÓN PARA EXPORTAR EXCEL (CON TOTALES) ---
     function exportarDocumento() {
       if (historialLotes.length === 0) {
         alert("No hay lotes en el historial para exportar.");
         return;
       }
+
+      let totalAves = 0;
+      let totalAveria = 0;
 
       let tablaHTML = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -1067,7 +1085,10 @@
       `;
       
       historialLotes.forEach((item) => {
+        totalAves += item.lote;
+        totalAveria += item.averiaMin;
         const displayNumLote = item.numLote || (item.nombre ? item.nombre.replace(/Lote /g, '') : '?');
+        
         tablaHTML += `
             <tr>
               <td>${displayNumLote}</td>
@@ -1081,7 +1102,18 @@
             </tr>`;
       });
 
+      // Añadir la fila final de totales
       tablaHTML += `
+            <tr style="background-color: #f3f4f6; font-weight: bold;">
+              <td style="text-align: right;">TOTALES:</td>
+              <td>${totalAves}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>${totalAveria}</td>
+              <td></td>
+              <td></td>
+            </tr>
           </table>
         </body>
         </html>
