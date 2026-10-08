@@ -893,8 +893,8 @@
       guardarHistorialLocalStorage();
       renderHistorial();
 
-      // Preparar para el siguiente lote
-      document.getElementById('inpNombreLote').value = '';
+      // Preparar para el siguiente lote (AHORA NO BORRAMOS EL Nº DE LOTE)
+      // document.getElementById('inpNombreLote').value = ''; <-- ELIMINADO PARA DEJARLO FIJO
       document.getElementById('inpTpLote').value = '';
       document.getElementById('inpInicio').value = final; // El final del anterior suele ser el inicio del nuevo
       document.getElementById('inpFinal').value = '';
