@@ -648,14 +648,26 @@
       return colors[index];
     }
 
+    // --- NUEVA FUNCIÓN: Redondea el tiempo si sobrepasa los 10 segundos ---
+    function redondearAvesMinutos(minutosExactos) {
+      if (!minutosExactos || minutosExactos <= 0) return 0;
+      const minutosEnteros = Math.floor(minutosExactos);
+      const segundos = (minutosExactos - minutosEnteros) * 60;
+      // Usamos > 10.001 para que pase estrictamente de 10 segundos y evitar errores mínimos de decimales de JS
+      return segundos > 10.001 ? minutosEnteros + 1 : minutosEnteros;
+    }
+
     // --- CÁLCULOS Y PERSISTENCIA DE DATOS ---
     function calculateAll() {
       const tpLoteInput = document.getElementById('inpTpLote').value;
       const tpLote = parseFloat(tpLoteInput) || 0;
       const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
 
-      const teoricoMin = (tpLote > 0 && velTeorica > 0) ? (tpLote / velTeorica) * 60 : 0;
-      document.getElementById('resTeoricoMin').textContent = `${Math.round(teoricoMin)} min`;
+      // Calculamos el valor exacto y aplicamos la nueva regla de los >10 segundos
+      const teoricoMinExacto = (tpLote > 0 && velTeorica > 0) ? (tpLote / velTeorica) * 60 : 0;
+      const teoricoMin = redondearAvesMinutos(teoricoMinExacto);
+
+      document.getElementById('resTeoricoMin').textContent = `${teoricoMin} min`;
       document.getElementById('resTeoricoHora').textContent = `(${minutesToHHMMSS(teoricoMin)})`;
 
       const inicioStr = document.getElementById('inpInicio').value;
@@ -729,25 +741,23 @@
 
       // --- PREDICCIÓN HORA DE FINALIZACIÓN ESTIMADA (ETA) CORREGIDA ---
       if (inicioStr && tpLote > 0) {
-        let estMinutosTotal = Math.round(teoricoMin + totalCambiosMin);
+        let estMinutosTotal = teoricoMin + Math.round(totalCambiosMin);
         let minActual = minInicio;
         let minutosTrabajados = 0;
-        let limitador = 0; // Evita bucles infinitos en caso extremo
+        let limitador = 0; 
 
-        while (minutosTrabajados < estMinutosTotal && limitador < 2880) { // Máximo 48h de simulación
+        while (minutosTrabajados < estMinutosTotal && limitador < 2880) { 
           let isBreak = false;
           
           if (autoBreaksEnabled) {
-            if (minActual >= 1415 && minActual < 1440) isBreak = true; // 23:35 a 00:00
-            else if (minActual >= 150 && minActual < 165) isBreak = true; // 02:30 a 02:45
-            else if (minActual >= 300 && minActual < 307) isBreak = true; // 05:00 a 05:07
+            if (minActual >= 1415 && minActual < 1440) isBreak = true; 
+            else if (minActual >= 150 && minActual < 165) isBreak = true; 
+            else if (minActual >= 300 && minActual < 307) isBreak = true; 
           }
 
           if (isBreak) {
-            // Es descanso, el reloj avanza pero NO sumamos trabajo
             minActual = (minActual + 1) % 1440;
           } else {
-            // Se trabaja de verdad, sumamos progreso y el reloj avanza
             minutosTrabajados++;
             minActual = (minActual + 1) % 1440;
           }
@@ -776,13 +786,12 @@
       document.getElementById('barDescansos').style.width = `${pctDescansos}%`;
       document.getElementById('barAveria').style.width = `${pctAveria}%`;
 
-      document.getElementById('legTeorico').textContent = `${Math.round(teoricoMin)}m`;
+      document.getElementById('legTeorico').textContent = `${teoricoMin}m`;
       document.getElementById('legDescansos').textContent = `${Math.round(totalDescansosYCambiosMin)}m`;
       document.getElementById('legAveria').textContent = `${Math.round(averiaMin)}m`;
 
       document.getElementById('chartEffPercent').textContent = `${Math.round(pctTeorico)}% Útil`;
 
-      // Guardar formulario en LocalStorage
       guardarFormularioLocalStorage();
     }
 
@@ -851,7 +860,10 @@
 
       const numLoteStr = numInput !== '' ? numInput : (historialLotes.length + 1).toString();
       const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
-      const teoricoMin = (tpLote / velTeorica) * 60;
+      
+      // Aplicamos el redondeo para el guardado en el historial también
+      const teoricoMinExacto = (tpLote / velTeorica) * 60;
+      const teoricoMin = redondearAvesMinutos(teoricoMinExacto);
       
       const minInicio = timeToMinutes(inicio);
       const minFinal = timeToMinutes(final);
@@ -893,10 +905,8 @@
       guardarHistorialLocalStorage();
       renderHistorial();
 
-      // Preparar para el siguiente lote (AHORA NO BORRAMOS EL Nº DE LOTE)
-      // document.getElementById('inpNombreLote').value = ''; <-- ELIMINADO PARA DEJARLO FIJO
       document.getElementById('inpTpLote').value = '';
-      document.getElementById('inpInicio').value = final; // El final del anterior suele ser el inicio del nuevo
+      document.getElementById('inpInicio').value = final; 
       document.getElementById('inpFinal').value = '';
       calculateAll();
     }
@@ -965,7 +975,6 @@
       lucide.createIcons();
     }
 
-    // --- FUNCIÓN PARA COPIAR TABLA AL PORTAPAPELES (CON TOTALES) ---
     function copiarTablaPortapapeles() {
       if (historialLotes.length === 0) {
         alert("No hay lotes en el historial para copiar.");
@@ -1011,7 +1020,6 @@
         textoPlano += `${displayNumLote}\t${item.lote}\t${item.inicio}\t${item.final}\t${item.brutoMin}\t${item.averiaMin}\t${item.velReal}\t${item.velTeorica}\n`;
       });
 
-      // Añadir la fila final de totales
       tablaHTML += `
           <tr>
             <td style="border: 1px solid #dddddd; padding: 8px; text-align: right; font-weight: bold; background-color: #f3f4f6;">TOTALES:</td>
@@ -1049,7 +1057,6 @@
         }).catch(err => alert("Error al copiar los datos."));
     }
 
-    // --- FUNCIÓN PARA EXPORTAR EXCEL (CON TOTALES) ---
     function exportarDocumento() {
       if (historialLotes.length === 0) {
         alert("No hay lotes en el historial para exportar.");
@@ -1102,7 +1109,6 @@
             </tr>`;
       });
 
-      // Añadir la fila final de totales
       tablaHTML += `
             <tr style="background-color: #f3f4f6; font-weight: bold;">
               <td style="text-align: right;">TOTALES:</td>
@@ -1167,7 +1173,6 @@
       calculateAll();
     }
 
-    // Inicialización al cargar la pantalla
     cargarFormularioLocalStorage();
     cargarHistorialLocalStorage();
     calculateAll();
