@@ -12,9 +12,9 @@
   <meta name="apple-mobile-web-app-title" content="MTAZ PLUS">
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⚡</text></svg>">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -27,14 +27,22 @@
           colors: {
             darkbg: '#050505',
             darkpanel: '#0a0a0a',
-            darkborder: '#1f1f1f'
+            darkborder: '#1f1f1f',
+            glasswhite: 'rgba(255, 255, 255, 0.03)',
+            glassdark: 'rgba(0, 0, 0, 0.2)',
           },
           boxShadow: {
-            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+            'glow-indigo': '0 0 20px rgba(99, 102, 241, 0.15)',
+            'glow-amber': '0 0 20px rgba(245, 158, 11, 0.15)',
+            'glass-panel': 'inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+            'inner-deep': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.5)',
           },
           animation: {
-            'slide-in-right': 'slideInRight 0.3s ease-out forwards',
+            'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             'fade-out': 'fadeOut 0.3s ease-in forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float-slow': 'floatSlow 12s ease-in-out infinite alternate',
+            'float-fast': 'floatFast 8s ease-in-out infinite alternate',
           },
           keyframes: {
             slideInRight: {
@@ -42,35 +50,71 @@
               '100%': { transform: 'translateX(0)', opacity: '1' },
             },
             fadeOut: {
-              '0%': { opacity: '1', transform: 'translateY(0)' },
-              '100%': { opacity: '0', transform: 'translateY(-10px)' },
+              '0%': { opacity: '1', transform: 'translateY(0) scale(0.95)' },
+              '100%': { opacity: '0', transform: 'translateY(-10px) scale(0.90)' },
+            },
+            floatSlow: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '50%': { transform: 'translate(30px, 50px) scale(1.1)' },
+              '100%': { transform: 'translate(-20px, 30px) scale(0.95)' },
+            },
+            floatFast: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '50%': { transform: 'translate(-40px, -30px) scale(1.05)' },
+              '100%': { transform: 'translate(20px, -40px) scale(0.9)' },
             }
           }
         },
       },
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
   
   <style>
     body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
     
     .glass-panel {
       background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.05);
     }
     .dark .glass-panel {
-      background: rgba(15, 15, 15, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(10,10,10,0.9) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--tw-shadow-glass-panel);
+    }
+
+    .input-premium {
+      transition: all 0.3s ease;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e2e8f0;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .dark .input-premium {
+      background: linear-gradient(180deg, #18181b 0%, #121214 100%);
+      border: 1px solid #27272a;
+      border-top-color: #3f3f46;
+      box-shadow: var(--tw-shadow-inner-deep);
+    }
+    .dark select.input-premium {
+      background-color: #18181b !important;
+      color: #ffffff !important;
+    }
+    .dark select.input-premium option {
+      background-color: #18181b !important;
+      color: #ffffff !important;
+    }
+    .input-premium:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15), var(--tw-shadow-inner-deep);
     }
     
     input[type="number"]::-webkit-inner-spin-button, 
@@ -78,247 +122,317 @@
     
     #toast-container { z-index: 9999; pointer-events: none; }
     .toast-msg { pointer-events: auto; }
+
+    .kpi-card {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
   </style>
 </head>
-<body class="h-full flex flex-col bg-slate-50 dark:bg-darkbg text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden selection:bg-indigo-500/30">
+<body class="h-full flex flex-col bg-slate-50 dark:bg-darkbg text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden selection:bg-indigo-500/30 relative">
+  
+  <!-- Fondo Dinámico con Movimiento Profesional -->
+  <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-[100px] animate-float-slow"></div>
+    <div class="absolute top-1/2 -right-32 w-[450px] h-[450px] bg-emerald-500/10 dark:bg-teal-600/15 rounded-full blur-[120px] animate-float-fast"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[400px] h-[400px] bg-purple-500/10 dark:bg-violet-600/15 rounded-full blur-[110px] animate-float-slow" style="animation-delay: -4s;"></div>
+  </div>
 
   <!-- Contenedor de Notificaciones -->
-  <div id="toast-container" class="fixed top-4 right-4 flex flex-col space-y-2 max-w-xs w-full"></div>
+  <div id="toast-container" class="fixed top-4 right-4 flex flex-col space-y-3 max-w-xs w-full"></div>
 
   <!-- Cabecera Superior Dashboard -->
-  <header class="sticky top-0 z-40 glass-panel border-b border-slate-200 dark:border-darkborder px-4 py-3 flex items-center justify-between shadow-sm">
+  <header class="sticky top-0 z-40 glass-panel border-b border-slate-200 dark:border-darkborder px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3">
       <div class="relative group cursor-pointer">
-        <div class="absolute inset-0 bg-indigo-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition"></div>
-        <div class="relative bg-gradient-to-br from-indigo-600 to-violet-700 p-2 rounded-xl text-white shadow-lg">
-          <i data-lucide="zap" class="w-5 h-5"></i>
+        <div class="absolute inset-0 bg-indigo-500 rounded-xl blur-lg opacity-40 group-hover:opacity-70 transition duration-300"></div>
+        <div class="relative bg-gradient-to-br from-indigo-500 to-violet-700 p-2.5 rounded-xl text-white shadow-lg border border-indigo-400/30">
+          <i data-lucide="zap" class="w-5 h-5 drop-shadow-md"></i>
         </div>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">MTAZ PLUS</h1>
-          <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30">PRO</span>
+          <h1 class="font-black text-lg sm:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">MTAZ PLUS</h1>
+          <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30 shadow-sm">PRO</span>
         </div>
-        <div class="flex items-center space-x-1.5 mt-0.5">
-          <span id="statusIndicator" class="w-2 h-2 rounded-full bg-slate-400"></span>
-          <p id="statusText" class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Esperando Datos</p>
+        <div class="flex items-center space-x-1.5 mt-0.5 bg-slate-100/50 dark:bg-black/30 rounded-full px-2 py-0.5 w-max border border-slate-200 dark:border-white/5">
+          <span id="statusIndicator" class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          <p id="statusText" class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Esperando Datos</p>
         </div>
       </div>
     </div>
 
     <div class="flex items-center space-x-3">
-      <div class="hidden sm:flex flex-col items-end mr-2">
-        <span id="liveClock" class="font-mono text-sm font-bold text-slate-700 dark:text-slate-200">00:00:00</span>
-        <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Turno MAD</span>
+      <div class="hidden sm:flex flex-col items-end mr-3">
+        <div class="bg-white dark:bg-[#111] border border-slate-200 dark:border-[#333] px-3 py-1 rounded-lg shadow-inner flex flex-col items-end">
+          <span id="liveClock" class="font-mono text-sm font-black text-slate-800 dark:text-slate-200 tracking-tight">00:00:00</span>
+          <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mt-0.5">Turno MAD</span>
+        </div>
       </div>
       
-      <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-[#1a1a1a] hover:bg-slate-200 dark:hover:bg-[#252525] text-slate-600 dark:text-slate-300 transition-all border border-slate-200 dark:border-[#333] active:scale-95 shadow-sm" title="Modo Oscuro/Claro">
-        <i id="themeIconSun" data-lucide="sun" class="w-4 h-4 hidden text-amber-500"></i>
-        <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4 text-indigo-400"></i>
-      </button>
+      <div class="flex items-center space-x-2 bg-slate-100 dark:bg-[#111] p-1 rounded-2xl border border-slate-200 dark:border-[#222]">
+        <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] hover:bg-slate-50 dark:hover:bg-[#252525] text-slate-600 dark:text-slate-300 transition-all shadow-sm active:scale-95 group" title="Modo Oscuro/Claro">
+          <i id="themeIconSun" data-lucide="sun" class="w-4 h-4 hidden text-amber-500 group-hover:rotate-45 transition-transform duration-500"></i>
+          <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4 text-indigo-400 group-hover:-rotate-12 transition-transform duration-500"></i>
+        </button>
 
-      <button onclick="resetValues()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-[#1a1a1a] hover:bg-rose-100 dark:hover:bg-rose-950/30 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition-all border border-slate-200 dark:border-[#333] active:scale-95 shadow-sm" title="Restablecer">
-        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-      </button>
+        <button onclick="resetValues()" class="p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition-all shadow-sm active:scale-95 group" title="Restablecer Formulario">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 group-hover:-rotate-180 transition-transform duration-500"></i>
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- Cuerpo Principal -->
-  <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-6 space-y-5">
+  <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
 
     <!-- Tarjetas KPI Superiores -->
     <div class="grid grid-cols-2 gap-4">
-      <div class="glass-panel rounded-2xl p-4 flex flex-col relative overflow-hidden group hover:border-amber-500/50 transition-colors duration-300">
-        <div class="absolute -top-10 -right-10 w-24 h-24 bg-amber-500/20 rounded-full blur-2xl"></div>
-        <div class="flex justify-between items-start mb-2">
-          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Avería Lote</span>
-          <div class="p-1.5 bg-amber-100 dark:bg-amber-500/10 rounded-lg text-amber-600 dark:text-amber-400"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+      <div class="kpi-card glass-panel rounded-2xl p-4 flex flex-col relative overflow-hidden group hover:shadow-glow-amber hover:border-amber-500/30">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-amber-500/20 to-orange-500/5 rounded-full blur-2xl group-hover:opacity-100 opacity-60 transition-opacity duration-500"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 pointer-events-none rounded-2xl"></div>
+        <div class="flex justify-between items-start mb-1 relative z-10">
+          <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-black/40 px-2 py-1 rounded-md border border-slate-200 dark:border-white/5">Avería Lote</span>
+          <div class="p-1.5 bg-amber-100 dark:bg-amber-500/10 rounded-lg text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 shadow-sm"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
         </div>
-        <div class="flex items-baseline space-x-1">
-          <div id="kpiAveriaMin" class="text-3xl sm:text-4xl font-black text-amber-600 dark:text-amber-400 tracking-tighter">0</div>
-          <span class="text-sm font-semibold text-slate-500 dark:text-slate-500">min</span>
+        <div class="flex items-baseline space-x-1 relative z-10 mt-2">
+          <div id="kpiAveriaMin" class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-amber-600 to-orange-500 dark:from-amber-400 dark:to-orange-300 tracking-tighter drop-shadow-sm">0</div>
+          <span class="text-sm font-bold text-amber-600/70 dark:text-amber-500/70">min</span>
         </div>
-        <div id="kpiAveriaHoras" class="text-[10px] font-mono font-medium text-slate-400 mt-1">00:00:00 (Excel)</div>
+        <div class="flex items-center space-x-1 mt-2 relative z-10">
+          <i data-lucide="file-spreadsheet" class="w-3 h-3 text-slate-400"></i>
+          <div id="kpiAveriaHoras" class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">00:00:00</div>
+        </div>
       </div>
 
-      <div class="glass-panel rounded-2xl p-4 flex flex-col relative overflow-hidden group hover:border-indigo-500/50 transition-colors duration-300">
-        <div class="absolute -top-10 -right-10 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl"></div>
-        <div class="flex justify-between items-start mb-2">
-          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Velocidad Real</span>
-          <div class="p-1.5 bg-indigo-100 dark:bg-indigo-500/10 rounded-lg text-indigo-600 dark:text-indigo-400"><i data-lucide="gauge" class="w-4 h-4"></i></div>
+      <div class="kpi-card glass-panel rounded-2xl p-4 flex flex-col relative overflow-hidden group hover:shadow-glow-indigo hover:border-indigo-500/30">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-purple-500/5 rounded-full blur-2xl group-hover:opacity-100 opacity-60 transition-opacity duration-500"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 pointer-events-none rounded-2xl"></div>
+        <div class="flex justify-between items-start mb-1 relative z-10">
+          <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-black/40 px-2 py-1 rounded-md border border-slate-200 dark:border-white/5">Vel. Real</span>
+          <div class="p-1.5 bg-indigo-100 dark:bg-indigo-500/10 rounded-lg text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 shadow-sm"><i data-lucide="gauge" class="w-4 h-4"></i></div>
         </div>
-        <div class="flex items-baseline space-x-1">
-          <div id="kpiVelocidadReal" class="text-3xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">0</div>
+        <div class="flex items-baseline space-x-1 relative z-10 mt-2">
+          <div id="kpiVelocidadReal" class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-purple-300 tracking-tighter drop-shadow-sm">0</div>
         </div>
-        <div class="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-wide">Aves / Hora</div>
+        <div class="text-[10px] font-bold text-indigo-600/70 dark:text-indigo-400/70 mt-2 uppercase tracking-widest relative z-10 flex items-center"><i data-lucide="bird" class="w-3 h-3 mr-1"></i> Aves / Hora</div>
       </div>
     </div>
 
     <!-- PANEL CENTRAL: Configuración del Lote y Tiempos -->
-    <section class="glass-panel rounded-2xl p-1 shadow-glass">
-      <div class="bg-white/50 dark:bg-[#0a0a0a]/80 rounded-xl p-4 space-y-5">
+    <section class="glass-panel rounded-3xl p-1 shadow-2xl relative overflow-hidden">
+      <!-- Destello decorativo superior -->
+      <div class="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+      
+      <div class="bg-white/60 dark:bg-[#0c0c0c]/90 rounded-[22px] p-5 space-y-6 relative z-10">
         
         <!-- Bloque 1: Aves y Velocidad -->
-        <div class="grid grid-cols-12 gap-3">
+        <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12 sm:col-span-4">
-            <label for="inpNombreLote" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nº Lote</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="hash" class="w-4 h-4 text-slate-400"></i></div>
-              <!-- Campo con cambio de color dinámico según el lote -->
-              <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpNombreLote" placeholder="Ej: 501" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-lg pl-9 pr-3 py-2.5 font-extrabold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm" oninput="actualizarColorLoteInput(); calculateAll()">
+            <label for="inpNombreLote" class="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest ml-1">Nº Lote</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <i data-lucide="hash" class="w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+              </div>
+              <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpNombreLote" placeholder="501" class="input-premium w-full rounded-xl pl-10 pr-4 py-3 font-black text-lg focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all text-slate-800 dark:text-white" oninput="actualizarColorLoteInput(); calculateAll()">
             </div>
           </div>
           
           <div class="col-span-6 sm:col-span-4">
-            <label for="inpTpLote" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Aves</label>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpTpLote" placeholder="Cantidad" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2.5 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm text-center" oninput="calculateAll()">
+            <label for="inpTpLote" class="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest ml-1">Cant. Aves</label>
+            <div class="relative group">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpTpLote" placeholder="Ej: 15400" class="input-premium w-full rounded-xl px-4 py-3 text-slate-900 dark:text-white font-black text-lg focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all text-center" oninput="calculateAll()">
+            </div>
           </div>
 
           <div class="col-span-6 sm:col-span-4">
-            <label for="inpVelTeorica" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Velocidad T.</label>
-            <select id="inpVelTeorica" onchange="calculateAll()" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2.5 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm appearance-none text-center cursor-pointer">
-              <option value="12000" selected>12.000 / h</option>
-              <option value="11300">11.300 / h</option>
-              <option value="10500">10.500 / h</option>
-            </select>
+            <label for="inpVelTeorica" class="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest ml-1">Velocidad</label>
+            <div class="relative">
+              <select id="inpVelTeorica" onchange="calculateAll()" class="input-premium w-full rounded-xl px-4 py-3 text-slate-900 dark:text-white font-black text-sm sm:text-base focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all appearance-none text-center cursor-pointer">
+                <option value="12000" selected>12.000 / h</option>
+                <option value="11300">11.300 / h</option>
+                <option value="10500">10.500 / h</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+              </div>
+            </div>
           </div>
         </div>
 
-        <hr class="border-slate-200 dark:border-darkborder">
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-[#333] to-transparent"></div>
 
         <!-- Bloque 2: Tiempos (Inicio / Fin) -->
-        <div class="grid grid-cols-2 gap-4 relative">
-          <div class="hidden sm:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-slate-300 dark:text-[#333] z-0">
-            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        <div class="grid grid-cols-2 gap-5 relative">
+          <!-- Icono Conector Central -->
+          <div class="hidden sm:flex absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-white dark:bg-[#151515] p-2 rounded-full border border-slate-200 dark:border-[#333] shadow-sm">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 dark:text-slate-500"></i>
           </div>
 
-          <div class="relative z-10">
-            <div class="flex justify-between items-center mb-1.5">
-              <label for="inpInicio" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Inicio</label>
-              <button onclick="setNow('inpInicio')" class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-500/30 transition">AHORA</button>
+          <div class="relative z-10 group">
+            <div class="flex justify-between items-end mb-2 ml-1">
+              <label for="inpInicio" class="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Inicio</label>
+              <button onclick="setNow('inpInicio')" class="text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/30 transition-all shadow-sm active:scale-95">AHORA</button>
             </div>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpInicio" placeholder="HH:MM" maxlength="5" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-xl px-3 py-3 text-slate-900 dark:text-white font-mono text-xl text-center font-bold focus:ring-2 focus:ring-emerald-500/50 outline-none transition shadow-inner" oninput="formatTimeInput(this)" onblur="calculateAll()">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpInicio" placeholder="HH:MM" maxlength="5" class="input-premium w-full rounded-2xl px-3 py-4 text-slate-900 dark:text-white font-mono text-2xl sm:text-3xl text-center font-black focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all group-hover:border-emerald-500/30" oninput="formatTimeInput(this)" onblur="calculateAll()">
           </div>
 
-          <div class="relative z-10">
-            <div class="flex justify-between items-center mb-1.5">
-              <label for="inpFinal" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Final</label>
-              <button onclick="setNow('inpFinal')" class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-500/30 transition">AHORA</button>
+          <div class="relative z-10 group">
+            <div class="flex justify-between items-end mb-2 ml-1">
+              <label for="inpFinal" class="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span> Final</label>
+              <button onclick="setNow('inpFinal')" class="text-[9px] font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 px-2.5 py-1 rounded-md border border-rose-200 dark:border-rose-500/30 transition-all shadow-sm active:scale-95">AHORA</button>
             </div>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpFinal" placeholder="HH:MM" maxlength="5" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-xl px-3 py-3 text-slate-900 dark:text-white font-mono text-xl text-center font-bold focus:ring-2 focus:ring-rose-500/50 outline-none transition shadow-inner" oninput="formatTimeInput(this)" onblur="calculateAll()">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpFinal" placeholder="HH:MM" maxlength="5" class="input-premium w-full rounded-2xl px-3 py-4 text-slate-900 dark:text-white font-mono text-2xl sm:text-3xl text-center font-black focus:ring-2 focus:ring-rose-500/50 outline-none transition-all group-hover:border-rose-500/30" oninput="formatTimeInput(this)" onblur="calculateAll()">
           </div>
         </div>
 
         <!-- Bloque 3: Resultados Rápidos -->
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-slate-100/50 dark:bg-[#111] rounded-xl p-3 border border-slate-200/50 dark:border-[#222] flex flex-col justify-center items-center text-center">
-            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-0.5">T. Teórico Exacto</span>
-            <div class="flex items-center space-x-1.5">
-              <span id="resTeoricoMin" class="font-mono text-lg font-black text-slate-800 dark:text-slate-200">0 min</span>
-              <span id="resTeoricoHora" class="text-[10px] font-mono text-slate-400">(00:00:00)</span>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gradient-to-br from-slate-100 to-slate-50 dark:from-[#151515] dark:to-[#0f0f0f] rounded-2xl p-3 border border-slate-200 dark:border-[#222] flex flex-col justify-center items-center text-center shadow-inner">
+            <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mb-1">T. Teórico Exacto</span>
+            <div class="flex items-center space-x-2">
+              <span id="resTeoricoMin" class="font-mono text-xl font-black text-slate-800 dark:text-slate-200">0m</span>
+              <span id="resTeoricoHora" class="text-[10px] font-mono font-bold text-slate-400 bg-slate-200 dark:bg-[#222] px-1.5 py-0.5 rounded-md">(00:00:00)</span>
             </div>
           </div>
-          <div class="bg-indigo-50/50 dark:bg-indigo-900/10 rounded-xl p-3 border border-indigo-100 dark:border-indigo-800/30 flex flex-col justify-center items-center text-center relative overflow-hidden">
-            <span class="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-0.5 flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i> ETA (Fin Estimado)</span>
-            <span id="resHoraFinEstimada" class="font-mono text-xl font-black text-indigo-700 dark:text-indigo-300 tracking-widest">--:--</span>
+          <div class="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/30 dark:to-black/20 rounded-2xl p-3 border border-indigo-100 dark:border-indigo-800/40 flex flex-col justify-center items-center text-center shadow-sm relative overflow-hidden group">
+            <div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors"></div>
+            <span class="text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-widest mb-1 flex items-center relative z-10"><i data-lucide="clock" class="w-3 h-3 mr-1"></i> ETA Lote</span>
+            <span id="resHoraFinEstimada" class="font-mono text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-purple-400 tracking-widest relative z-10 drop-shadow-sm">--:--</span>
           </div>
         </div>
 
-        <!-- Botón Guardar -->
-        <button onclick="guardarLoteEnHistorial()" class="w-full relative group overflow-hidden rounded-xl p-[1px] transition-transform active:scale-95">
-          <span class="absolute inset-0 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600 rounded-xl opacity-70 group-hover:opacity-100 blur-sm transition-opacity duration-300"></span>
-          <div class="relative bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-3.5 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm uppercase tracking-widest shadow-xl border border-white/20">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
-            <span>Confirmar Lote & Guardar</span>
-          </div>
-        </button>
+        <!-- Botones de Acción (Sumar / Finalizar Lote) -->
+        <div class="flex gap-3 pt-2">
+          <!-- Botón Sumar a Lote -->
+          <button onclick="guardarLoteEnHistorial()" class="flex-1 relative group overflow-hidden rounded-2xl p-[1px] transition-all active:scale-[0.98]">
+            <span class="absolute inset-0 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 rounded-2xl opacity-70 group-hover:opacity-100 blur-sm transition-opacity duration-300"></span>
+            <div class="relative bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black py-4 px-4 rounded-2xl flex items-center justify-center space-x-2 text-sm uppercase tracking-widest shadow-xl border border-white/20 transition-all">
+              <i data-lucide="plus" class="w-5 h-5 drop-shadow-md"></i>
+              <span class="drop-shadow-md">Sumar a Lote</span>
+            </div>
+          </button>
+
+          <!-- Botón Finalizar Lote -->
+          <button onclick="finalizarLote()" class="w-1/3 relative group overflow-hidden rounded-2xl p-[1px] transition-all active:scale-[0.98]" title="Cerrar este lote y empezar uno nuevo">
+            <span class="absolute inset-0 bg-gradient-to-r from-rose-400 via-red-500 to-orange-500 rounded-2xl opacity-70 group-hover:opacity-100 blur-sm transition-opacity duration-300"></span>
+            <div class="relative bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 text-white font-black py-4 px-2 rounded-2xl flex items-center justify-center space-x-2 text-xs sm:text-sm uppercase tracking-widest shadow-xl border border-white/20 transition-all">
+              <i data-lucide="flag" class="w-4 h-4 drop-shadow-md"></i>
+              <span class="drop-shadow-md">Finalizar</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Mensaje de Último Lote Cerrado -->
+        <div id="ultimoLoteCerrado" class="hidden mt-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-center text-base sm:text-lg font-bold text-emerald-800 dark:text-emerald-300 transition-all shadow-inner">
+        </div>
 
       </div>
     </section>
 
     <!-- Acordeón: Ajustes del Turno (Descansos) -->
-    <section class="glass-panel rounded-2xl overflow-hidden transition-all duration-300">
-      <button onclick="toggleAccordion('accDescansos', 'iconAccDescansos')" aria-controls="accDescansos" aria-expanded="false" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-white/5 transition">
+    <section class="glass-panel rounded-2xl overflow-hidden transition-all duration-300 border border-slate-200 dark:border-white/5">
+      <button onclick="toggleAccordion('accDescansos', 'iconAccDescansos')" aria-controls="accDescansos" aria-expanded="false" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/80 dark:hover:bg-white/5 transition-colors">
         <div class="flex items-center space-x-3">
-          <div class="p-2 rounded-xl bg-slate-100 dark:bg-[#1a1a1a] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#333]">
+          <div class="p-2.5 rounded-xl bg-gradient-to-br from-slate-100 to-white dark:from-[#1a1a1a] dark:to-[#111] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#333] shadow-sm">
             <i data-lucide="coffee" class="w-4 h-4"></i>
           </div>
           <div>
-            <h2 class="font-bold text-sm text-slate-900 dark:text-white">Descansos & Cambios MAD</h2>
-            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Automatización de pausas</p>
+            <h2 class="font-black text-sm text-slate-900 dark:text-white tracking-tight">Descansos & Ajustes</h2>
+            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">Pausas automáticas</p>
           </div>
         </div>
         <div class="flex items-center space-x-3">
-          <span id="badgeDescansos" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-[#222] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#333]">0m aplicados</span>
-          <i id="iconAccDescansos" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
+          <span id="badgeDescansos" class="text-[10px] font-mono font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-[#222] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#333] shadow-inner">0m aplic.</span>
+          <div class="p-1 rounded-full bg-slate-100 dark:bg-[#222]">
+            <i id="iconAccDescansos" data-lucide="chevron-down" class="w-4 h-4 text-slate-500 transition-transform duration-300"></i>
+          </div>
         </div>
       </button>
 
-      <div id="accDescansos" class="hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-darkborder space-y-3 bg-white/30 dark:bg-black/20">
-        <div class="flex items-center justify-between bg-slate-50 dark:bg-[#111] p-3 rounded-xl border border-slate-200 dark:border-[#222]">
-          <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Aplicar Pausas (23:35 / 02:30 / 05:00)</span>
+      <div id="accDescansos" class="hidden px-4 pb-5 pt-2 border-t border-slate-100 dark:border-darkborder space-y-4 bg-slate-50/50 dark:bg-black/20">
+        <div class="flex items-center justify-between bg-white dark:bg-[#111] p-3.5 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+          <div class="flex items-center space-x-3">
+            <i data-lucide="clock-4" class="w-4 h-4 text-indigo-500"></i>
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Aplicar Pausas (23:35 / 02:30 / 05:00)</span>
+          </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" id="chkAutoBreaks" checked onchange="calculateAll()" class="sr-only peer">
-            <div class="w-9 h-5 bg-slate-300 dark:bg-[#333] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+            <div class="w-11 h-6 bg-slate-200 dark:bg-[#333] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500 shadow-inner"></div>
           </label>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="inpNumCambios" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Nº Cambios Carro</label>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpNumCambios" value="0" class="w-full bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-[#111] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+            <label for="inpNumCambios" class="block text-[9px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest text-center">Nº Cambios Carro</label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpNumCambios" value="0" class="input-premium w-full rounded-lg px-3 py-2 text-slate-900 dark:text-white font-black text-lg focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
           </div>
-          <div>
-            <label for="inpMinPorCambio" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Min / Cambio</label>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpMinPorCambio" value="3" class="w-full bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
+          <div class="bg-white dark:bg-[#111] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+            <label for="inpMinPorCambio" class="block text-[9px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-widest text-center">Min / Cambio</label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpMinPorCambio" value="3" class="input-premium w-full rounded-lg px-3 py-2 text-slate-900 dark:text-white font-black text-lg focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
           </div>
         </div>
       </div>
     </section>
 
     <!-- HISTORIAL DEL TURNO -->
-    <section class="glass-panel rounded-2xl p-4 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-200 dark:border-darkborder pb-3">
-        <div class="flex items-center space-x-2.5">
-          <div class="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
-            <i data-lucide="database" class="w-4 h-4"></i>
+    <section class="glass-panel rounded-3xl p-5 space-y-5 border border-slate-200 dark:border-white/5 shadow-lg relative overflow-hidden">
+      <!-- Decal -->
+      <i data-lucide="database" class="absolute -bottom-6 -right-6 w-32 h-32 text-slate-100 dark:text-[#111] opacity-50 pointer-events-none -rotate-12"></i>
+
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-darkborder pb-4 relative z-10">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+            <i data-lucide="list-checks" class="w-5 h-5"></i>
           </div>
-          <h2 class="font-bold text-sm text-slate-900 dark:text-white">REGISTRO DEL TURNO</h2>
+          <div>
+            <h2 class="font-black text-base text-slate-900 dark:text-white tracking-tight">REGISTRO DEL TURNO</h2>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Resumen MAD (Independiente)</p>
+          </div>
         </div>
-        <button onclick="limpiarHistorial()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center space-x-1 transition px-2 py-1 rounded hover:bg-rose-50 dark:hover:bg-rose-900/20">
+        <button onclick="limpiarHistorial()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 flex items-center space-x-1.5 transition-colors px-2.5 py-1.5 rounded-lg border border-transparent hover:border-rose-200 dark:hover:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-900/20">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           <span>Limpiar</span>
         </button>
       </div>
 
-      <!-- Resumen Turno -->
-      <div class="grid grid-cols-3 gap-2 text-center">
-        <div class="bg-slate-50 dark:bg-[#0a0a0a] p-2 rounded-xl border border-slate-200 dark:border-[#1f1f1f]">
-          <div class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Total Aves</div>
-          <div id="histTotalAves" class="text-lg font-black text-slate-800 dark:text-slate-100">0</div>
+      <!-- Resumen Turno Visual -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center relative z-10">
+        <div class="bg-gradient-to-b from-slate-50 to-white dark:from-[#111] dark:to-[#0a0a0a] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+          <div class="text-[9px] uppercase font-black text-indigo-500 dark:text-indigo-400 tracking-widest mb-1 flex justify-center items-center"><i data-lucide="calendar" class="w-3 h-3 mr-1"></i> Fecha (D+1)</div>
+          <div id="histFechaApli" class="text-xl font-black text-indigo-700 dark:text-indigo-300">--/--</div>
         </div>
-        <div class="bg-slate-50 dark:bg-[#0a0a0a] p-2 rounded-xl border border-slate-200 dark:border-[#1f1f1f]">
-          <div class="text-[9px] uppercase font-bold text-amber-500 tracking-wider">Avería Total</div>
-          <div id="histTotalAveria" class="text-lg font-black text-amber-600 dark:text-amber-400">0m</div>
+        <div class="bg-gradient-to-b from-slate-50 to-white dark:from-[#111] dark:to-[#0a0a0a] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+          <div class="text-[9px] uppercase font-black text-slate-500 dark:text-slate-400 tracking-widest mb-1 flex justify-center items-center"><i data-lucide="calculator" class="w-3 h-3 mr-1"></i> Total Aves</div>
+          <div id="histTotalAves" class="text-xl font-black text-slate-800 dark:text-slate-100">0</div>
         </div>
-        <div class="bg-slate-50 dark:bg-[#0a0a0a] p-2 rounded-xl border border-slate-200 dark:border-[#1f1f1f]">
-          <div class="text-[9px] uppercase font-bold text-indigo-400 tracking-wider">Trs</div>
-          <div id="histTotalLotes" class="text-lg font-black text-indigo-600 dark:text-indigo-400">0</div>
+        <div class="bg-gradient-to-b from-slate-50 to-white dark:from-[#111] dark:to-[#0a0a0a] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+          <div class="text-[9px] uppercase font-black text-amber-500 tracking-widest mb-1 flex justify-center items-center"><i data-lucide="flame" class="w-3 h-3 mr-1"></i> Avería Total</div>
+          <div id="histTotalAveria" class="text-xl font-black text-amber-600 dark:text-amber-400">0m</div>
+        </div>
+        <div class="bg-gradient-to-b from-slate-50 to-white dark:from-[#111] dark:to-[#0a0a0a] p-3 rounded-xl border border-slate-200 dark:border-[#222] shadow-sm">
+          <div class="text-[9px] uppercase font-black text-emerald-500 tracking-widest mb-1 flex justify-center items-center"><i data-lucide="layers" class="w-3 h-3 mr-1"></i> Registros</div>
+          <div id="histTotalLotes" class="text-xl font-black text-emerald-600 dark:text-emerald-400">0</div>
         </div>
       </div>
 
       <!-- Lista -->
-      <div id="listaHistorial" class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-        <p class="text-xs text-slate-400 text-center py-6 font-medium">No hay lotes registrados aún.</p>
+      <div id="listaHistorial" class="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar relative z-10 py-1">
+        <div class="flex flex-col items-center justify-center py-10 opacity-50">
+          <i data-lucide="inbox" class="w-10 h-10 mb-3 text-slate-400"></i>
+          <p class="text-sm text-slate-500 font-bold">No hay registros aún.</p>
+        </div>
       </div>
 
       <!-- Botones Exportar -->
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <button onclick="copiarTablaPortapapeles()" class="bg-slate-100 dark:bg-[#1a1a1a] hover:bg-slate-200 dark:hover:bg-[#252525] border border-slate-200 dark:border-[#333] text-slate-700 dark:text-slate-300 font-bold py-2.5 px-3 rounded-xl text-xs transition active:scale-95 flex items-center justify-center space-x-2">
-          <i data-lucide="clipboard-copy" class="w-4 h-4"></i>
+      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-darkborder relative z-10">
+        <button onclick="copiarTablaPortapapeles()" class="bg-white dark:bg-[#1a1a1a] hover:bg-slate-50 dark:hover:bg-[#252525] border border-slate-200 dark:border-[#333] text-slate-700 dark:text-slate-300 font-black py-3.5 px-4 rounded-xl text-xs transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-sm hover:shadow">
+          <i data-lucide="clipboard-copy" class="w-4 h-4 text-emerald-500"></i>
           <span>Copiar a Excel</span>
         </button>
-        <button onclick="exportarCSV()" class="bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300 font-bold py-2.5 px-3 rounded-xl text-xs transition active:scale-95 flex items-center justify-center space-x-2">
+        <button onclick="exportarCSV()" class="bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300 font-black py-3.5 px-4 rounded-xl text-xs transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-sm hover:shadow">
           <i data-lucide="download-cloud" class="w-4 h-4"></i>
           <span>Descargar CSV</span>
         </button>
@@ -345,14 +459,12 @@
     const numberFormatter = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 });
 
     const loteColors = [
-      'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
-      'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
-      'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
-      'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30',
-      'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30',
-      'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
-      'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
-      'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30'
+      'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700/50',
+      'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50',
+      'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-700/50',
+      'bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-700/50',
+      'bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700/50',
+      'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700/50'
     ];
 
     let historial = [];
@@ -380,10 +492,6 @@
       return hours * 60 + minutes;
     }
 
-    function timeToMinutes(value) {
-      return parseHHMM(value);
-    }
-
     function formatClockFromMinutes(totalMinutes) {
       const normalized = ((Math.floor(totalMinutes) % 1440) + 1440) % 1440;
       const hours = String(Math.floor(normalized / 60)).padStart(2, '0');
@@ -391,7 +499,6 @@
       return `${hours}:${minutes}`;
     }
 
-    // Convierte minutos a duración, normalizando correctamente los segundos.
     function minutesToHHMMSS(totalMinutes) {
       if (!Number.isFinite(totalMinutes)) return '00:00:00';
       const negative = totalMinutes < 0;
@@ -403,8 +510,6 @@
       return `${negative ? '-' : ''}${[hours, minutes, seconds].map(v => String(v).padStart(2, '0')).join(':')}`;
     }
 
-    // Se conserva la regla original de MTAZ: solo sube al minuto siguiente
-    // cuando la fracción supera los 10 segundos.
     function redondearAvesMinutos(minutosExactos) {
       if (!Number.isFinite(minutosExactos) || minutosExactos <= 0) return 0;
       const minutosEnteros = Math.floor(minutosExactos);
@@ -420,11 +525,7 @@
       return loteColors[Math.abs(hash) % loteColors.length];
     }
 
-    function actualizarColorLoteInput() {
-      const input = byId('inpNombreLote');
-      input.classList.remove(...loteColors.flatMap(c => c.split(' ')));
-      input.classList.add(...getColorForLote(input.value.trim()).split(' '));
-    }
+    function actualizarColorLoteInput() {}
 
     function safeStorageSet(key, value) {
       try { localStorage.setItem(key, value); return true; }
@@ -437,7 +538,16 @@
     }
 
     // ---------------------------------------------------------------------
-    // Pausas: intervalos absolutos para soportar cualquier cruce de día
+    // FECHA SIEMPRE UN DÍA POR DELANTE DEL DÍA ACTUAL
+    // ---------------------------------------------------------------------
+    function getFechaTurnoMad() {
+      const now = new Date();
+      now.setDate(now.getDate() + 1); // Suma siempre un día por delante
+      return now.toLocaleDateString('es-ES');
+    }
+
+    // ---------------------------------------------------------------------
+    // Pausas
     // ---------------------------------------------------------------------
     function calculateBreakMinutes(startAbsolute, endAbsolute) {
       if (!Number.isFinite(startAbsolute) || !Number.isFinite(endAbsolute) || endAbsolute <= startAbsolute) return 0;
@@ -464,7 +574,6 @@
     function addProductionMinutes(startMinute, productionMinutes, applyBreaks) {
       let cursor = startMinute;
       let worked = 0;
-      // Límite defensivo de 72 h para evitar bucles inesperados.
       const maxSteps = 72 * 60;
       let steps = 0;
       while (worked < productionMinutes && steps < maxSteps) {
@@ -478,7 +587,7 @@
     function getElapsedMinutes(startMinute, endMinute) {
       let elapsed = endMinute - startMinute;
       if (elapsed < 0) elapsed += 1440;
-      return elapsed; // inicio y final iguales significan duración cero
+      return elapsed;
     }
 
     function getPauseAndDowntime(brutoMin, minInicio, autoBreaks, numCambios, minPorCambio) {
@@ -496,24 +605,30 @@
       const container = byId('toast-container');
       const toast = document.createElement('div');
       const themes = {
-        success: ['bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200', 'text-emerald-500', 'check-circle'],
-        error: ['bg-rose-50 dark:bg-rose-950/80 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200', 'text-rose-500', 'alert-octagon'],
-        info: ['bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200', 'text-indigo-500', 'info']
+        success: ['bg-white dark:bg-[#1a1a1a] border-emerald-500/30 text-slate-800 dark:text-white', 'text-emerald-500', 'check-circle'],
+        error: ['bg-white dark:bg-[#1a1a1a] border-rose-500/30 text-slate-800 dark:text-white', 'text-rose-500', 'alert-octagon'],
+        info: ['bg-white dark:bg-[#1a1a1a] border-indigo-500/30 text-slate-800 dark:text-white', 'text-indigo-500', 'info']
       };
       const [background, iconColor, iconName] = themes[type] || themes.info;
-      toast.className = `toast-msg flex items-center p-3 mb-2 text-sm rounded-xl shadow-lg border backdrop-blur-md animate-slide-in-right ${background}`;
+      toast.className = `toast-msg flex items-center p-4 mb-2 text-sm rounded-2xl shadow-xl border ${background} animate-slide-in-right relative overflow-hidden`;
+      
+      const accentBar = document.createElement('div');
+      accentBar.className = `absolute left-0 top-0 bottom-0 w-1 ${iconColor.replace('text-', 'bg-')}`;
+      
       const icon = document.createElement('i');
       icon.setAttribute('data-lucide', iconName);
-      icon.className = `w-5 h-5 mr-2 flex-shrink-0 ${iconColor}`;
+      icon.className = `w-5 h-5 mr-3 flex-shrink-0 ${iconColor}`;
+      
       const text = document.createElement('span');
-      text.className = 'font-medium';
+      text.className = 'font-bold tracking-tight';
       text.textContent = String(message);
-      toast.append(icon, text);
+      
+      toast.append(accentBar, icon, text);
       container.appendChild(toast);
       if (window.lucide) lucide.createIcons({ root: toast });
       window.setTimeout(() => {
         toast.classList.replace('animate-slide-in-right', 'animate-fade-out');
-        window.setTimeout(() => toast.remove(), 320);
+        window.setTimeout(() => toast.remove(), 300);
       }, 3000);
     }
 
@@ -574,10 +689,10 @@
       const indicator = byId('statusIndicator');
       const text = byId('statusText');
       const classes = {
-        running: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest'],
-        finished: ['w-2 h-2 rounded-full bg-slate-400', 'text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
-        waiting: ['w-2 h-2 rounded-full bg-slate-400', 'text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
-        invalid: ['w-2 h-2 rounded-full bg-rose-500', 'text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest']
+        running: ['w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse', 'text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest'],
+        finished: ['w-1.5 h-1.5 rounded-full bg-slate-400', 'text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
+        waiting: ['w-1.5 h-1.5 rounded-full bg-slate-400', 'text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
+        invalid: ['w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]', 'text-[9px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest']
       };
       const [indicatorClass, textClass] = classes[state];
       indicator.className = indicatorClass;
@@ -602,7 +717,7 @@
       let running = false;
 
       if (startText && start === null || endText && end === null) {
-        setStatus('invalid', 'Hora no válida');
+        setStatus('invalid', 'Hora Inválida');
       } else if (start !== null && endText === '' && tpLote > 0) {
         running = true;
         const now = new Date();
@@ -618,7 +733,6 @@
         setStatus('waiting', 'Esperando Datos');
       }
 
-      // Velocidad real basada en tiempo bruto, igual que en la versión original.
       const numCambios = Math.max(0, readNumber('inpNumCambios', 0));
       const minPorCambio = Math.max(0, readNumber('inpMinPorCambio', 0));
       const autoBreaks = byId('chkAutoBreaks').checked;
@@ -634,11 +748,11 @@
         ? Math.max(0, brutoMin - theoreticalMinutes - downtime.total)
         : 0;
       const realSpeed = brutoMin > 0 ? Math.round((tpLote / brutoMin) * 60) : 0;
+      
       byId('kpiAveriaMin').textContent = numberFormatter.format(Math.round(averiaMin));
-      byId('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} Excel`;
+      byId('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} excel`;
       byId('kpiVelocidadReal').textContent = numberFormatter.format(realSpeed);
 
-      // ETA: duración productiva + cambios, saltando las pausas configuradas.
       if (start !== null && tpLote > 0 && (running || endText === '')) {
         const requiredMinutes = theoreticalMinutes + downtime.changeMinutes;
         const finishAbsolute = addProductionMinutes(start, requiredMinutes, autoBreaks);
@@ -657,14 +771,10 @@
     // ---------------------------------------------------------------------
     function getFormData() {
       return {
-        n: byId('inpNombreLote').value,
-        c: byId('inpTpLote').value,
-        v: byId('inpVelTeorica').value,
-        i: byId('inpInicio').value,
-        f: byId('inpFinal').value,
-        nc: byId('inpNumCambios').value,
-        mc: byId('inpMinPorCambio').value,
-        ab: byId('chkAutoBreaks').checked
+        n: byId('inpNombreLote').value, c: byId('inpTpLote').value,
+        v: byId('inpVelTeorica').value, i: byId('inpInicio').value,
+        f: byId('inpFinal').value, nc: byId('inpNumCambios').value,
+        mc: byId('inpMinPorCambio').value, ab: byId('chkAutoBreaks').checked
       };
     }
 
@@ -699,16 +809,11 @@
         const stored = JSON.parse(safeStorageGet(STORAGE_KEYS.history) || '[]');
         historial = Array.isArray(stored) ? stored.filter(item => item && typeof item === 'object').map(item => ({
           id: Number(item.id) || Date.now() + Math.floor(Math.random() * 100000),
-          num: String(item.num ?? ''),
-          aves: Math.max(0, Number(item.aves) || 0),
-          ini: String(item.ini ?? ''),
-          fin: String(item.fin ?? ''),
-          bruto: Math.max(0, Number(item.bruto) || 0),
-          ave: Math.max(0, Number(item.ave) || 0),
-          vr: Math.max(0, Number(item.vr) || 0),
-          vt: Math.max(0, Number(item.vt) || 0),
-          pausas: Math.max(0, Number(item.pausas) || 0),
-          cambios: Math.max(0, Number(item.cambios) || 0),
+          num: String(item.num ?? ''), aves: Math.max(0, Number(item.aves) || 0),
+          ini: String(item.ini ?? ''), fin: String(item.fin ?? ''),
+          bruto: Math.max(0, Number(item.bruto) || 0), ave: Math.max(0, Number(item.ave) || 0),
+          vr: Math.max(0, Number(item.vr) || 0), vt: Math.max(0, Number(item.vt) || 0),
+          pausas: Math.max(0, Number(item.pausas) || 0), cambios: Math.max(0, Number(item.cambios) || 0),
           teorico: Math.max(0, Number(item.teorico) || 0)
         })) : [];
       } catch (error) {
@@ -717,6 +822,9 @@
       }
     }
 
+    // ---------------------------------------------------------------------
+    // FUNCIONES DE ACCIÓN: SUMAR A LOTE Y FINALIZAR
+    // ---------------------------------------------------------------------
     function guardarLoteEnHistorial() {
       const tpLote = readNumber('inpTpLote', 0);
       const startText = byId('inpInicio').value.trim();
@@ -725,18 +833,18 @@
       const end = parseHHMM(endText);
 
       if (!Number.isFinite(tpLote) || tpLote <= 0 || start === null || end === null) {
-        showToast('Introduce una cantidad de aves válida y horas HH:MM correctas.', 'error');
+        showToast('Faltan datos o formato de hora incorrecto.', 'error');
         return;
       }
       const brutoMin = getElapsedMinutes(start, end);
       if (brutoMin <= 0) {
-        showToast('La duración del lote debe ser superior a cero.', 'error');
+        showToast('La duración debe ser superior a cero.', 'error');
         return;
       }
 
       const velocidadTeorica = readNumber('inpVelTeorica', 0);
       if (velocidadTeorica <= 0) {
-        showToast('La velocidad teórica debe ser mayor que cero.', 'error');
+        showToast('Velocidad teórica inválida.', 'error');
         return;
       }
 
@@ -746,26 +854,68 @@
       const downtime = getPauseAndDowntime(brutoMin, start, byId('chkAutoBreaks').checked, numCambios, minPorCambio);
       const averia = Math.max(0, brutoMin - theoretical - downtime.total);
       const realSpeed = Math.round((tpLote / brutoMin) * 60);
+      
       const lotNumber = byId('inpNombreLote').value.trim() || String(historial.length + 1);
+      
+      // REGISTRO INDEPENDIENTE
       const entry = {
         id: Date.now(), num: lotNumber, aves: tpLote, ini: startText, fin: endText,
         bruto: Math.round(brutoMin), ave: Math.round(averia), vr: realSpeed, vt: velocidadTeorica,
         pausas: Math.round(downtime.pauseMinutes), cambios: Math.round(downtime.changeMinutes), teorico: theoretical
       };
+      historial.unshift(entry);
+      showToast(`Añadido registro al Lote ${lotNumber}.`, 'success');
 
-      historial.push(entry);
       persistHistory();
       renderHistorial();
 
       byId('inpTpLote').value = '';
       byId('inpInicio').value = endText;
       byId('inpFinal').value = '';
-      byId('inpNombreLote').value = '';
-      actualizarColorLoteInput();
-      showToast(`Lote ${lotNumber} guardado correctamente.`, 'success');
+      
       calculateAll();
     }
 
+    function finalizarLote() {
+      const inputLote = byId('inpNombreLote');
+      const oldLote = inputLote.value.trim();
+      
+      if (!oldLote) {
+        showToast('No hay ningún número de lote activo para finalizar.', 'info');
+        return;
+      }
+      
+      // FILTRAMOS LOS REGISTROS DE ESTE LOTE Y CALCULAMOS LA SUMA TOTAL
+      const registrosLote = historial.filter(item => item.num === oldLote);
+      let avesTotales = 0;
+      let averiaTotal = 0;
+
+      registrosLote.forEach(item => {
+        avesTotales += item.aves;
+        averiaTotal += item.ave;
+      });
+      
+      inputLote.value = '';
+      byId('inpTpLote').value = '';
+      byId('inpFinal').value = '';
+      
+      actualizarColorLoteInput();
+      showToast(`Lote ${oldLote} Finalizado y sumado correctamente.`, 'success');
+      
+      // MENSAJE DEBAJO DE LOS BOTONES CON LA SUMA TOTAL EN TEXTO GRANDE
+      const msgContainer = byId('ultimoLoteCerrado');
+      if (msgContainer) {
+        msgContainer.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 inline-block mr-1.5 align-text-bottom"></i> Registrado Lote <b>#${oldLote}</b>: Suma de avería y pollo -> <span class="text-lg sm:text-xl font-black">${numberFormatter.format(avesTotales)}</span> aves y <span class="text-lg sm:text-xl font-black">${averiaTotal}m</span> avería.`;
+        msgContainer.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons({ root: msgContainer });
+      }
+
+      calculateAll();
+    }
+
+    // ---------------------------------------------------------------------
+    // PINTAR HISTORIAL
+    // ---------------------------------------------------------------------
     function renderHistorial() {
       const container = byId('listaHistorial');
       container.replaceChildren();
@@ -773,9 +923,9 @@
       let totalAveria = 0;
 
       if (historial.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'text-xs text-slate-400 text-center py-6 font-medium';
-        empty.textContent = 'No hay lotes registrados aún.';
+        const empty = document.createElement('div');
+        empty.className = 'flex flex-col items-center justify-center py-10 opacity-50';
+        empty.innerHTML = `<i data-lucide="inbox" class="w-10 h-10 mb-3 text-slate-400"></i><p class="text-sm text-slate-500 font-bold">No hay registros aún.</p>`;
         container.appendChild(empty);
       } else {
         for (const item of historial) {
@@ -783,41 +933,57 @@
           totalAveria += item.ave;
 
           const row = document.createElement('div');
-          row.className = 'flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222]';
+          row.className = 'flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white dark:bg-[#151515] border border-slate-200 dark:border-[#2a2a2a] shadow-sm hover:shadow-md transition-shadow group';
+          
           const details = document.createElement('div');
-          details.className = 'min-w-0';
+          details.className = 'min-w-0 flex-1';
+          
           const title = document.createElement('div');
-          title.className = 'font-bold text-sm text-slate-900 dark:text-white flex flex-wrap items-center gap-2';
+          title.className = 'flex flex-wrap items-center gap-2 mb-1';
+          
+          const badgeColor = getColorForLote(item.num);
           const badge = document.createElement('span');
-          badge.className = `px-2 py-0.5 rounded text-xs font-black border ${getColorForLote(item.num)}`;
-          badge.textContent = `Lote #${item.num}`;
+          badge.className = `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest border ${badgeColor}`;
+          badge.textContent = `L #${item.num}`;
+          
           const birds = document.createElement('span');
+          birds.className = 'font-black text-sm text-slate-800 dark:text-slate-100';
           birds.textContent = `${numberFormatter.format(item.aves)} aves`;
+          
           title.append(badge, birds);
+          
           const times = document.createElement('div');
-          times.className = 'text-[10px] text-slate-500 font-mono mt-1';
-          times.textContent = `${item.ini} → ${item.fin} | VR: ${numberFormatter.format(item.vr)} aves/h`;
+          times.className = 'text-[11px] text-slate-500 dark:text-slate-400 font-mono font-bold flex items-center gap-2';
+          times.innerHTML = `<span class="bg-slate-100 dark:bg-black/30 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">${item.ini} → ${item.fin}</span> <span>VR: ${numberFormatter.format(item.vr)}</span>`;
+          
           details.append(title, times);
 
           const actions = document.createElement('div');
           actions.className = 'flex items-center space-x-3 flex-shrink-0';
-          const downtimeBadge = document.createElement('span');
-          downtimeBadge.className = `font-mono text-xs font-bold px-2 py-1 rounded-lg ${item.ave > 0 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'}`;
-          downtimeBadge.textContent = `${item.ave}m`;
+          
+          const downtimeBadge = document.createElement('div');
+          downtimeBadge.className = `flex flex-col items-center justify-center min-w-[3rem] px-2 py-1 rounded-xl border ${item.ave > 0 ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400'}`;
+          downtimeBadge.innerHTML = `<span class="text-[10px] uppercase font-bold tracking-widest leading-none mb-0.5 opacity-70">Avería</span><span class="font-black text-sm leading-none">${item.ave}m</span>`;
+          
           const remove = document.createElement('button');
           remove.type = 'button';
-          remove.className = 'text-slate-400 hover:text-rose-500 transition p-1';
-          remove.setAttribute('aria-label', `Eliminar lote ${item.num}`);
+          remove.className = 'w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors opacity-0 group-hover:opacity-100';
+          remove.setAttribute('aria-label', `Eliminar registro`);
           remove.addEventListener('click', () => borrarLote(item.id));
           const icon = document.createElement('i');
-          icon.setAttribute('data-lucide', 'x');
+          icon.setAttribute('data-lucide', 'trash-2');
           icon.className = 'w-4 h-4';
           remove.appendChild(icon);
+          
           actions.append(downtimeBadge, remove);
           row.append(details, actions);
           container.appendChild(row);
         }
       }
+
+      const fechaTurno = getFechaTurnoMad();
+      const elFechaApli = byId('histFechaApli');
+      if(elFechaApli) elFechaApli.textContent = fechaTurno;
 
       byId('histTotalAves').textContent = numberFormatter.format(totalAves);
       byId('histTotalAveria').textContent = `${Math.round(totalAveria)}m`;
@@ -829,23 +995,39 @@
       historial = historial.filter(item => item.id !== id);
       persistHistory();
       renderHistorial();
-      showToast('Lote eliminado.', 'info');
+      showToast('Registro eliminado correctamente.', 'info');
     }
 
     function limpiarHistorial() {
-      if (!window.confirm('¿Borrar todo el historial del turno MAD?')) return;
+      if (!window.confirm('¿Estás seguro de borrar todo el historial del turno MAD? Esta acción no se puede deshacer.')) return;
       historial = [];
+      byId('inpNombreLote').value = '';
       persistHistory();
       renderHistorial();
-      showToast('Historial limpio.', 'info');
+      showToast('Historial borrado.', 'info');
     }
 
     // ---------------------------------------------------------------------
-    // Copia a Excel y exportación CSV compatible con Excel en español
+    // Copia a Excel y exportación CSV con fila de Resumen
     // ---------------------------------------------------------------------
     function historyAsTSV() {
+      const sortedHistory = [...historial].reverse();
       const rows = [['Lote', 'Aves', 'Inicio', 'Fin', 'Bruto (min)', 'Teórico (min)', 'Pausas (min)', 'Cambios (min)', 'Avería (min)', 'Velocidad real', 'Velocidad teórica']];
-      historial.forEach(item => rows.push([item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt]));
+      
+      let sumAves = 0;
+      let sumAveria = 0;
+
+      sortedHistory.forEach(item => {
+        sumAves += item.aves;
+        sumAveria += item.ave;
+        rows.push([item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt]);
+      });
+
+      const fecha = getFechaTurnoMad();
+      rows.push([]); 
+      rows.push(['FECHA', 'TOTAL AVES', '', '', '', '', '', '', 'TOTAL AVERÍA', '', '']);
+      rows.push([fecha, sumAves, '', '', '', '', '', '', sumAveria, '', '']);
+
       return rows.map(row => row.join('\t')).join('\n');
     }
 
@@ -866,10 +1048,10 @@
           area.remove();
           if (!copied) throw new Error('El navegador no permitió copiar.');
         }
-        showToast('Copiado para Excel.', 'success');
+        showToast('Datos copiados. Pégalos en Excel.', 'success');
       } catch (error) {
         console.error(error);
-        showToast('No se pudo copiar. Usa Descargar CSV.', 'error');
+        showToast('Error al copiar. Usa el botón Descargar CSV.', 'error');
       }
     }
 
@@ -880,26 +1062,44 @@
 
     function exportarCSV() {
       if (historial.length === 0) return showToast('No hay datos para exportar.', 'error');
+      
+      let sumAves = 0;
+      let sumAveria = 0;
+      
+      const sortedHistory = [...historial].reverse();
+      const dataRows = sortedHistory.map(item => {
+         sumAves += item.aves;
+         sumAveria += item.ave;
+         return [item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt];
+      });
+
+      const fecha = getFechaTurnoMad();
       const rows = [
         ['Lote', 'Aves', 'Inicio', 'Fin', 'DuracionBruta_min', 'TiempoTeorico_min', 'Pausas_min', 'Cambios_min', 'Averia_min', 'VelocidadReal_aves_h', 'VelocidadTeorica_aves_h'],
-        ...historial.map(item => [item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt])
+        ...dataRows,
+        [],
+        ['FECHA', 'TOTAL AVES', '', '', '', '', '', '', 'TOTAL AVERIA', '', ''],
+        [fecha, sumAves, '', '', '', '', '', '', sumAveria, '', '']
       ];
+
       const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(';')).join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Turno_MAD_${new Date().toLocaleDateString('en-CA')}.csv`;
+      
+      const fechaObj = new Date();
+      fechaObj.setDate(fechaObj.getDate() + 1); // Archivo CSV también un día por delante
+      const isoDate = fechaObj.toISOString().split('T')[0];
+      
+      link.download = `Turno_MAD_${isoDate}.csv`;
       document.body.appendChild(link);
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      showToast('Descarga iniciada.', 'success');
+      showToast('Descarga CSV iniciada.', 'success');
     }
 
-    // ---------------------------------------------------------------------
-    // Reinicio e inicialización
-    // ---------------------------------------------------------------------
     function resetValues() {
       byId('inpNombreLote').value = DEFAULTS.lote;
       byId('inpTpLote').value = DEFAULTS.aves;
@@ -912,7 +1112,7 @@
       actualizarColorLoteInput();
       try { localStorage.removeItem(STORAGE_KEYS.form); } catch (error) { console.warn(error); }
       calculateAll();
-      showToast('Formulario reiniciado. El historial se conserva.', 'info');
+      showToast('Formulario reiniciado (el historial se mantiene).', 'info');
     }
 
     function initializeApp() {
@@ -923,7 +1123,6 @@
       calculateAll();
       updateLiveClock();
       window.setInterval(updateLiveClock, 1000);
-      // No se recrea el intervalo desde calculateAll: evita acumulaciones y parpadeos.
       liveTimerInterval = window.setInterval(() => {
         const start = byId('inpInicio').value.trim();
         const end = byId('inpFinal').value.trim();
@@ -932,6 +1131,6 @@
     }
 
     initializeApp();
-</script>
+  </script>
 </body>
 </html>
