@@ -2,7 +2,7 @@
 <html lang="es" class="h-full dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MTAZ PLUS | HMI 4.0</title>
   
   <meta name="theme-color" content="#050505">
@@ -161,7 +161,7 @@
         <!-- Bloque 1: Aves y Velocidad -->
         <div class="grid grid-cols-12 gap-3">
           <div class="col-span-12 sm:col-span-4">
-            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nº Lote</label>
+            <label for="inpNombreLote" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nº Lote</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="hash" class="w-4 h-4 text-slate-400"></i></div>
               <!-- Campo con cambio de color dinámico según el lote -->
@@ -170,12 +170,12 @@
           </div>
           
           <div class="col-span-6 sm:col-span-4">
-            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Aves</label>
+            <label for="inpTpLote" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Aves</label>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpTpLote" placeholder="Cantidad" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2.5 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm text-center" oninput="calculateAll()">
           </div>
 
           <div class="col-span-6 sm:col-span-4">
-            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Velocidad T.</label>
+            <label for="inpVelTeorica" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Velocidad T.</label>
             <select id="inpVelTeorica" onchange="calculateAll()" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2.5 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm appearance-none text-center cursor-pointer">
               <option value="12000" selected>12.000 / h</option>
               <option value="11300">11.300 / h</option>
@@ -194,7 +194,7 @@
 
           <div class="relative z-10">
             <div class="flex justify-between items-center mb-1.5">
-              <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Inicio</label>
+              <label for="inpInicio" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Inicio</label>
               <button onclick="setNow('inpInicio')" class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-500/30 transition">AHORA</button>
             </div>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpInicio" placeholder="HH:MM" maxlength="5" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-xl px-3 py-3 text-slate-900 dark:text-white font-mono text-xl text-center font-bold focus:ring-2 focus:ring-emerald-500/50 outline-none transition shadow-inner" oninput="formatTimeInput(this)" onblur="calculateAll()">
@@ -202,7 +202,7 @@
 
           <div class="relative z-10">
             <div class="flex justify-between items-center mb-1.5">
-              <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Final</label>
+              <label for="inpFinal" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Hora Final</label>
               <button onclick="setNow('inpFinal')" class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-500/30 transition">AHORA</button>
             </div>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpFinal" placeholder="HH:MM" maxlength="5" class="w-full bg-slate-50 dark:bg-[#121212] border border-slate-200 dark:border-[#222] rounded-xl px-3 py-3 text-slate-900 dark:text-white font-mono text-xl text-center font-bold focus:ring-2 focus:ring-rose-500/50 outline-none transition shadow-inner" oninput="formatTimeInput(this)" onblur="calculateAll()">
@@ -238,7 +238,7 @@
 
     <!-- Acordeón: Ajustes del Turno (Descansos) -->
     <section class="glass-panel rounded-2xl overflow-hidden transition-all duration-300">
-      <button onclick="toggleAccordion('accDescansos', 'iconAccDescansos')" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-white/5 transition">
+      <button onclick="toggleAccordion('accDescansos', 'iconAccDescansos')" aria-controls="accDescansos" aria-expanded="false" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-white/5 transition">
         <div class="flex items-center space-x-3">
           <div class="p-2 rounded-xl bg-slate-100 dark:bg-[#1a1a1a] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#333]">
             <i data-lucide="coffee" class="w-4 h-4"></i>
@@ -265,11 +265,11 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Nº Cambios Carro</label>
+            <label for="inpNumCambios" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Nº Cambios Carro</label>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpNumCambios" value="0" class="w-full bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Min / Cambio</label>
+            <label for="inpMinPorCambio" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Min / Cambio</label>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inpMinPorCambio" value="3" class="w-full bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222] rounded-lg px-3 py-2 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-indigo-500/50 outline-none text-center" oninput="calculateAll()">
           </div>
         </div>
@@ -328,9 +328,22 @@
   </main>
 
   <script>
-    lucide.createIcons();
+    'use strict';
 
-    // Paleta de colores rotativos para los números de lote
+    // ---------------------------------------------------------------------
+    // Configuración y utilidades
+    // ---------------------------------------------------------------------
+    if (window.lucide) lucide.createIcons();
+
+    const BREAKS = [
+      { start: 23 * 60 + 35, end: 24 * 60, label: '23:35–00:00' }, // 25 min
+      { start: 2 * 60 + 30, end: 2 * 60 + 45, label: '02:30–02:45' }, // 15 min
+      { start: 5 * 60, end: 5 * 60 + 7, label: '05:00–05:07' } // 7 min
+    ];
+    const DEFAULTS = { lote: '', aves: '', velocidad: '12000', inicio: '', fin: '', cambios: '0', minCambio: '3', pausas: true };
+    const STORAGE_KEYS = { form: 'mtaz_form', history: 'mtaz_hist', theme: 'theme' };
+    const numberFormatter = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 });
+
     const loteColors = [
       'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
       'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
@@ -342,407 +355,583 @@
       'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30'
     ];
 
-    function getColorForLote(loteStr) {
-      if (!loteStr) return loteColors[0];
+    let historial = [];
+    let liveTimerInterval = null;
+
+    function byId(id) {
+      const element = document.getElementById(id);
+      if (!element) throw new Error(`No se encuentra el elemento #${id}`);
+      return element;
+    }
+
+    function readNumber(id, fallback = 0) {
+      const raw = byId(id).value.trim().replace(',', '.');
+      if (raw === '') return fallback;
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function parseHHMM(value) {
+      const match = /^(\d{2}):([0-5]\d)$/.exec(String(value || '').trim());
+      if (!match) return null;
+      const hours = Number(match[1]);
+      const minutes = Number(match[2]);
+      if (hours > 23) return null;
+      return hours * 60 + minutes;
+    }
+
+    function timeToMinutes(value) {
+      return parseHHMM(value);
+    }
+
+    function formatClockFromMinutes(totalMinutes) {
+      const normalized = ((Math.floor(totalMinutes) % 1440) + 1440) % 1440;
+      const hours = String(Math.floor(normalized / 60)).padStart(2, '0');
+      const minutes = String(normalized % 60).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+
+    // Convierte minutos a duración, normalizando correctamente los segundos.
+    function minutesToHHMMSS(totalMinutes) {
+      if (!Number.isFinite(totalMinutes)) return '00:00:00';
+      const negative = totalMinutes < 0;
+      let totalSeconds = Math.round(Math.abs(totalMinutes) * 60);
+      const hours = Math.floor(totalSeconds / 3600);
+      totalSeconds %= 3600;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${negative ? '-' : ''}${[hours, minutes, seconds].map(v => String(v).padStart(2, '0')).join(':')}`;
+    }
+
+    // Se conserva la regla original de MTAZ: solo sube al minuto siguiente
+    // cuando la fracción supera los 10 segundos.
+    function redondearAvesMinutos(minutosExactos) {
+      if (!Number.isFinite(minutosExactos) || minutosExactos <= 0) return 0;
+      const minutosEnteros = Math.floor(minutosExactos);
+      const segundosRestantes = (minutosExactos - minutosEnteros) * 60;
+      return segundosRestantes > 10.001 ? minutosEnteros + 1 : minutosEnteros;
+    }
+
+    function getColorForLote(lote) {
+      const value = String(lote || '');
+      if (!value) return loteColors[0];
       let hash = 0;
-      for (let i = 0; i < loteStr.length; i++) {
-        hash = loteStr.charCodeAt(i) + ((hash << 5) - hash);
-      }
+      for (let i = 0; i < value.length; i++) hash = value.charCodeAt(i) + ((hash << 5) - hash);
       return loteColors[Math.abs(hash) % loteColors.length];
     }
 
     function actualizarColorLoteInput() {
-      const val = document.getElementById('inpNombreLote').value.trim();
-      const inputEl = document.getElementById('inpNombreLote');
-      // Limpiamos clases de color anteriores y aplicamos la nueva
-      inputEl.className = `w-full bg-slate-50 dark:bg-[#121212] border rounded-lg pl-9 pr-3 py-2.5 font-extrabold focus:ring-2 focus:ring-indigo-500/50 outline-none transition text-sm ${getColorForLote(val)}`;
+      const input = byId('inpNombreLote');
+      input.classList.remove(...loteColors.flatMap(c => c.split(' ')));
+      input.classList.add(...getColorForLote(input.value.trim()).split(' '));
     }
 
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      let bgClass, iconClass, iconName;
-      if (type === 'success') {
-        bgClass = 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200';
-        iconClass = 'text-emerald-500';
-        iconName = 'check-circle';
-      } else if (type === 'error') {
-        bgClass = 'bg-rose-50 dark:bg-rose-950/80 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200';
-        iconClass = 'text-rose-500';
-        iconName = 'alert-octagon';
-      } else {
-        bgClass = 'bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200';
-        iconClass = 'text-indigo-500';
-        iconName = 'info';
+    function safeStorageSet(key, value) {
+      try { localStorage.setItem(key, value); return true; }
+      catch (error) { console.warn('No se pudo guardar en almacenamiento local:', error); return false; }
+    }
+
+    function safeStorageGet(key) {
+      try { return localStorage.getItem(key); }
+      catch (error) { console.warn('No se pudo leer almacenamiento local:', error); return null; }
+    }
+
+    // ---------------------------------------------------------------------
+    // Pausas: intervalos absolutos para soportar cualquier cruce de día
+    // ---------------------------------------------------------------------
+    function calculateBreakMinutes(startAbsolute, endAbsolute) {
+      if (!Number.isFinite(startAbsolute) || !Number.isFinite(endAbsolute) || endAbsolute <= startAbsolute) return 0;
+      let total = 0;
+      const firstDay = Math.floor(startAbsolute / 1440) - 1;
+      const lastDay = Math.floor(endAbsolute / 1440) + 1;
+      for (let day = firstDay; day <= lastDay; day++) {
+        for (const pause of BREAKS) {
+          const pauseStart = day * 1440 + pause.start;
+          const pauseEnd = day * 1440 + pause.end;
+          const overlapStart = Math.max(startAbsolute, pauseStart);
+          const overlapEnd = Math.min(endAbsolute, pauseEnd);
+          if (overlapEnd > overlapStart) total += overlapEnd - overlapStart;
+        }
       }
+      return total;
+    }
 
-      toast.className = `toast-msg flex items-center p-3 mb-2 text-sm rounded-xl shadow-lg border backdrop-blur-md animate-slide-in-right ${bgClass}`;
-      toast.innerHTML = `
-        <i data-lucide="${iconName}" class="w-5 h-5 mr-2 flex-shrink-0 ${iconClass}"></i>
-        <span class="font-medium">${message}</span>
-      `;
-      
+    function isInsideBreak(absoluteMinute) {
+      const minuteOfDay = ((Math.floor(absoluteMinute) % 1440) + 1440) % 1440;
+      return BREAKS.some(pause => minuteOfDay >= pause.start && minuteOfDay < pause.end);
+    }
+
+    function addProductionMinutes(startMinute, productionMinutes, applyBreaks) {
+      let cursor = startMinute;
+      let worked = 0;
+      // Límite defensivo de 72 h para evitar bucles inesperados.
+      const maxSteps = 72 * 60;
+      let steps = 0;
+      while (worked < productionMinutes && steps < maxSteps) {
+        if (!applyBreaks || !isInsideBreak(cursor)) worked++;
+        cursor++;
+        steps++;
+      }
+      return worked >= productionMinutes ? cursor : null;
+    }
+
+    function getElapsedMinutes(startMinute, endMinute) {
+      let elapsed = endMinute - startMinute;
+      if (elapsed < 0) elapsed += 1440;
+      return elapsed; // inicio y final iguales significan duración cero
+    }
+
+    function getPauseAndDowntime(brutoMin, minInicio, autoBreaks, numCambios, minPorCambio) {
+      const pauseMinutes = autoBreaks && brutoMin > 0
+        ? calculateBreakMinutes(minInicio, minInicio + brutoMin)
+        : 0;
+      const changeMinutes = Math.max(0, numCambios) * Math.max(0, minPorCambio);
+      return { pauseMinutes, changeMinutes, total: pauseMinutes + changeMinutes };
+    }
+
+    // ---------------------------------------------------------------------
+    // Notificaciones
+    // ---------------------------------------------------------------------
+    function showToast(message, type = 'info') {
+      const container = byId('toast-container');
+      const toast = document.createElement('div');
+      const themes = {
+        success: ['bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200', 'text-emerald-500', 'check-circle'],
+        error: ['bg-rose-50 dark:bg-rose-950/80 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200', 'text-rose-500', 'alert-octagon'],
+        info: ['bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200', 'text-indigo-500', 'info']
+      };
+      const [background, iconColor, iconName] = themes[type] || themes.info;
+      toast.className = `toast-msg flex items-center p-3 mb-2 text-sm rounded-xl shadow-lg border backdrop-blur-md animate-slide-in-right ${background}`;
+      const icon = document.createElement('i');
+      icon.setAttribute('data-lucide', iconName);
+      icon.className = `w-5 h-5 mr-2 flex-shrink-0 ${iconColor}`;
+      const text = document.createElement('span');
+      text.className = 'font-medium';
+      text.textContent = String(message);
+      toast.append(icon, text);
       container.appendChild(toast);
-      lucide.createIcons({ root: toast });
-
-      setTimeout(() => {
+      if (window.lucide) lucide.createIcons({ root: toast });
+      window.setTimeout(() => {
         toast.classList.replace('animate-slide-in-right', 'animate-fade-out');
-        setTimeout(() => toast.remove(), 300);
+        window.setTimeout(() => toast.remove(), 320);
       }, 3000);
+    }
+
+    // ---------------------------------------------------------------------
+    // Tema y acordeones
+    // ---------------------------------------------------------------------
+    function updateThemeIcons(isDark) {
+      byId('themeIconSun').classList.toggle('hidden', !isDark);
+      byId('themeIconMoon').classList.toggle('hidden', isDark);
     }
 
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      safeStorageSet(STORAGE_KEYS.theme, isDark ? 'dark' : 'light');
       updateThemeIcons(isDark);
     }
-    
-    function updateThemeIcons(isDark) {
-      document.getElementById('themeIconSun').classList.toggle('hidden', !isDark);
-      document.getElementById('themeIconMoon').classList.toggle('hidden', isDark);
-    }
 
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-      updateThemeIcons(true);
+    function initializeTheme() {
+      const saved = safeStorageGet(STORAGE_KEYS.theme);
+      const isDark = saved ? saved === 'dark' : window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', Boolean(isDark));
+      updateThemeIcons(Boolean(isDark));
     }
 
     function toggleAccordion(id, iconId) {
-      const content = document.getElementById(id);
+      const content = byId(id);
+      const button = content.previousElementSibling;
+      const expanded = content.classList.toggle('hidden') === false;
       const icon = document.getElementById(iconId);
-      content.classList.toggle('hidden');
-      icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+      if (icon) icon.style.transform = expanded ? 'rotate(180deg)' : 'rotate(0deg)';
+      if (button?.hasAttribute('aria-expanded')) button.setAttribute('aria-expanded', String(expanded));
     }
 
+    // ---------------------------------------------------------------------
+    // Entrada de hora y reloj
+    // ---------------------------------------------------------------------
     function formatTimeInput(input) {
-      let val = input.value.replace(/\D/g, '');
-      if (val.length >= 3) val = val.substring(0, 2) + ':' + val.substring(2, 4);
-      input.value = val;
+      let digits = input.value.replace(/\D/g, '').slice(0, 4);
+      if (digits.length > 2) digits = `${digits.slice(0, 2)}:${digits.slice(2)}`;
+      input.value = digits;
       calculateAll();
     }
 
     function setNow(inputId) {
       const now = new Date();
-      const str = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-      document.getElementById(inputId).value = str;
+      byId(inputId).value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       calculateAll();
     }
 
-    setInterval(() => {
-      const now = new Date();
-      document.getElementById('liveClock').textContent = now.toLocaleTimeString('es-ES', { hour12: false });
-    }, 1000);
-
-    function timeToMinutes(timeStr) {
-      if (!timeStr || !timeStr.includes(':')) return 0;
-      const [h, m] = timeStr.split(':').map(Number);
-      return (h || 0) * 60 + (m || 0);
+    function updateLiveClock() {
+      byId('liveClock').textContent = new Date().toLocaleTimeString('es-ES', { hour12: false });
     }
 
-    function minutesToHHMMSS(totalMinutes) {
-      const isNegative = totalMinutes < 0;
-      let absMin = Math.abs(totalMinutes);
-      const hrs = String(Math.floor(absMin / 60)).padStart(2, '0');
-      const mins = String(Math.floor(absMin % 60)).padStart(2, '0');
-      const secs = String(Math.round((absMin - Math.floor(absMin)) * 60)).padStart(2, '0');
-      return `${isNegative ? '-' : ''}${hrs}:${mins}:${secs}`;
+    // ---------------------------------------------------------------------
+    // Cálculo principal
+    // ---------------------------------------------------------------------
+    function setStatus(state, message) {
+      const indicator = byId('statusIndicator');
+      const text = byId('statusText');
+      const classes = {
+        running: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest'],
+        finished: ['w-2 h-2 rounded-full bg-slate-400', 'text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
+        waiting: ['w-2 h-2 rounded-full bg-slate-400', 'text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'],
+        invalid: ['w-2 h-2 rounded-full bg-rose-500', 'text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest']
+      };
+      const [indicatorClass, textClass] = classes[state];
+      indicator.className = indicatorClass;
+      text.className = textClass;
+      text.textContent = message;
     }
-
-    function redondearAvesMinutos(minutosExactos) {
-      if (!minutosExactos || minutosExactos <= 0) return 0;
-      const minEnteros = Math.floor(minutosExactos);
-      const segs = (minutosExactos - minEnteros) * 60;
-      return segs > 10.001 ? minEnteros + 1 : minEnteros;
-    }
-
-    function calculateOverlap(start1, end1, start2, end2) {
-      let r1 = start1 > end1 ? [{s: start1, e: 1440}, {s: 0, e: end1}] : [{s: start1, e: end1}];
-      let r2 = start2 > end2 ? [{s: start2, e: 1440}, {s: 0, e: end2}] : [{s: start2, e: end2}];
-      let overlap = 0;
-      for (let a of r1) {
-        for (let b of r2) {
-          let s = Math.max(a.s, b.s), e = Math.min(a.e, b.e);
-          if (s < e) overlap += (e - s);
-        }
-      }
-      return overlap;
-    }
-
-    let liveTimerInterval = null;
 
     function calculateAll() {
-      const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
-      const velTeorica = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
-      
-      const teoricoMinExacto = (tpLote > 0 && velTeorica > 0) ? (tpLote / velTeorica) * 60 : 0;
-      const teoricoMin = redondearAvesMinutos(teoricoMinExacto);
-      
-      document.getElementById('resTeoricoMin').textContent = `${teoricoMin}m`;
-      document.getElementById('resTeoricoHora').textContent = `(${minutesToHHMMSS(teoricoMin)})`;
+      const tpLote = Math.max(0, readNumber('inpTpLote', 0));
+      const velTeorica = readNumber('inpVelTeorica', 12000);
+      const theoreticalExact = tpLote > 0 && velTeorica > 0 ? (tpLote / velTeorica) * 60 : 0;
+      const theoreticalMinutes = redondearAvesMinutos(theoreticalExact);
+      byId('resTeoricoMin').textContent = `${numberFormatter.format(theoreticalMinutes)}m`;
+      byId('resTeoricoHora').textContent = `(${minutesToHHMMSS(theoreticalMinutes)})`;
 
-      const inicioStr = document.getElementById('inpInicio').value;
-      const finalStr = document.getElementById('inpFinal').value;
-      
+      const startText = byId('inpInicio').value.trim();
+      const endText = byId('inpFinal').value.trim();
+      const start = startText ? parseHHMM(startText) : null;
+      const end = endText ? parseHHMM(endText) : null;
       let brutoMin = 0;
-      let minInicio = timeToMinutes(inicioStr);
-      let minFinal = timeToMinutes(finalStr);
+      let endAbsolute = null;
+      let running = false;
 
-      clearInterval(liveTimerInterval);
-      const statusIndicator = document.getElementById('statusIndicator');
-      const statusText = document.getElementById('statusText');
-
-      if (inicioStr && !finalStr && tpLote > 0) {
-        statusIndicator.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
-        statusText.textContent = 'En Producción';
-        statusText.className = 'text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest';
-        
-        liveTimerInterval = setInterval(() => {
-          const now = new Date();
-          const currentMin = now.getHours() * 60 + now.getMinutes();
-          let currentBruto = currentMin - minInicio;
-          if (currentBruto < 0) currentBruto += 1440;
-          procesarCalculosSecundarios(minInicio, minInicio + currentBruto, currentBruto, tpLote, teoricoMin);
-        }, 10000);
-        
+      if (startText && start === null || endText && end === null) {
+        setStatus('invalid', 'Hora no válida');
+      } else if (start !== null && endText === '' && tpLote > 0) {
+        running = true;
         const now = new Date();
-        const currentMin = now.getHours() * 60 + now.getMinutes();
-        brutoMin = currentMin - minInicio;
-        if (brutoMin < 0) brutoMin += 1440;
-        minFinal = minInicio + brutoMin;
-        
-      } else if (inicioStr && finalStr) {
-        statusIndicator.className = 'w-2 h-2 rounded-full bg-slate-400';
-        statusText.textContent = 'Lote Finalizado';
-        statusText.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-widest';
-        
-        brutoMin = minFinal - minInicio;
-        if (brutoMin < 0) brutoMin += 1440;
+        const currentMinute = now.getHours() * 60 + now.getMinutes();
+        brutoMin = getElapsedMinutes(start, currentMinute);
+        endAbsolute = start + brutoMin;
+        setStatus('running', 'En Producción');
+      } else if (start !== null && end !== null) {
+        brutoMin = getElapsedMinutes(start, end);
+        endAbsolute = start + brutoMin;
+        setStatus('finished', 'Lote Finalizado');
       } else {
-        statusIndicator.className = 'w-2 h-2 rounded-full bg-slate-400';
-        statusText.textContent = 'Esperando Datos';
-        statusText.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-widest';
+        setStatus('waiting', 'Esperando Datos');
       }
 
-      procesarCalculosSecundarios(minInicio, minFinal, brutoMin, tpLote, teoricoMin);
+      // Velocidad real basada en tiempo bruto, igual que en la versión original.
+      const numCambios = Math.max(0, readNumber('inpNumCambios', 0));
+      const minPorCambio = Math.max(0, readNumber('inpMinPorCambio', 0));
+      const autoBreaks = byId('chkAutoBreaks').checked;
+      const downtime = start !== null
+        ? getPauseAndDowntime(brutoMin, start, autoBreaks, numCambios, minPorCambio)
+        : { pauseMinutes: 0, changeMinutes: numCambios * minPorCambio, total: numCambios * minPorCambio };
+
+      byId('badgeDescansos').textContent = `${Math.round(downtime.total)}m aplic.`;
+      const breakdown = Math.round(downtime.pauseMinutes);
+      byId('badgeDescansos').title = `Pausas: ${breakdown} min · Cambios: ${Math.round(downtime.changeMinutes)} min`;
+
+      const averiaMin = brutoMin > 0 && theoreticalMinutes > 0
+        ? Math.max(0, brutoMin - theoreticalMinutes - downtime.total)
+        : 0;
+      const realSpeed = brutoMin > 0 ? Math.round((tpLote / brutoMin) * 60) : 0;
+      byId('kpiAveriaMin').textContent = numberFormatter.format(Math.round(averiaMin));
+      byId('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} Excel`;
+      byId('kpiVelocidadReal').textContent = numberFormatter.format(realSpeed);
+
+      // ETA: duración productiva + cambios, saltando las pausas configuradas.
+      if (start !== null && tpLote > 0 && (running || endText === '')) {
+        const requiredMinutes = theoreticalMinutes + downtime.changeMinutes;
+        const finishAbsolute = addProductionMinutes(start, requiredMinutes, autoBreaks);
+        byId('resHoraFinEstimada').textContent = finishAbsolute === null
+          ? '--:--'
+          : formatClockFromMinutes(finishAbsolute);
+      } else {
+        byId('resHoraFinEstimada').textContent = '--:--';
+      }
+
       guardarFormulario();
     }
 
-    function procesarCalculosSecundarios(minInicio, minFinal, brutoMin, tpLote, teoricoMin) {
-      const autoBreaksEnabled = document.getElementById('chkAutoBreaks').checked;
-      let pausasMin = 0;
-      
-      if (autoBreaksEnabled && brutoMin > 0) {
-        pausasMin += calculateOverlap(minInicio, minFinal, 1415, 1440);
-        pausasMin += calculateOverlap(minInicio, minFinal, 150, 165);
-        pausasMin += calculateOverlap(minInicio, minFinal, 300, 307);
-      }
-
-      const numCambios = parseFloat(document.getElementById('inpNumCambios').value) || 0;
-      const minPorCambio = parseFloat(document.getElementById('inpMinPorCambio').value) || 0;
-      pausasMin += (numCambios * minPorCambio);
-
-      document.getElementById('badgeDescansos').textContent = `${Math.round(pausasMin)}m aplic.`;
-
-      let averiaMin = 0;
-      if (brutoMin > 0 && teoricoMin > 0) {
-        averiaMin = Math.max(0, brutoMin - teoricoMin - pausasMin);
-      }
-      
-      let velReal = brutoMin > 0 ? Math.round((tpLote / brutoMin) * 60) : 0;
-
-      document.getElementById('kpiAveriaMin').textContent = Math.round(averiaMin);
-      document.getElementById('kpiAveriaHoras').textContent = `${minutesToHHMMSS(averiaMin)} Excel`;
-      document.getElementById('kpiVelocidadReal').textContent = velReal.toLocaleString();
-
-      const inicioStr = document.getElementById('inpInicio').value;
-      if (inicioStr && tpLote > 0 && (brutoMin === 0 || !document.getElementById('inpFinal').value)) {
-        let estMinTotal = teoricoMin + (numCambios * minPorCambio);
-        let minActual = timeToMinutes(inicioStr);
-        let minsTrabajados = 0, limit = 0;
-
-        while (minsTrabajados < estMinTotal && limit < 1440) {
-          let isBreak = false;
-          if (autoBreaksEnabled) {
-            if (minActual >= 1415 && minActual < 1440) isBreak = true;
-            else if (minActual >= 150 && minActual < 165) isBreak = true;
-            else if (minActual >= 300 && minActual < 307) isBreak = true;
-          }
-          if (!isBreak) minsTrabajados++;
-          minActual = (minActual + 1) % 1440;
-          limit++;
-        }
-        
-        const hE = String(Math.floor(minActual / 60)).padStart(2, '0');
-        const mE = String(minActual % 60).padStart(2, '0');
-        document.getElementById('resHoraFinEstimada').textContent = `${hE}:${mE}`;
-      } else {
-        document.getElementById('resHoraFinEstimada').textContent = '--:--';
-      }
+    // ---------------------------------------------------------------------
+    // Persistencia del formulario e historial
+    // ---------------------------------------------------------------------
+    function getFormData() {
+      return {
+        n: byId('inpNombreLote').value,
+        c: byId('inpTpLote').value,
+        v: byId('inpVelTeorica').value,
+        i: byId('inpInicio').value,
+        f: byId('inpFinal').value,
+        nc: byId('inpNumCambios').value,
+        mc: byId('inpMinPorCambio').value,
+        ab: byId('chkAutoBreaks').checked
+      };
     }
 
     function guardarFormulario() {
-      const data = {
-        n: document.getElementById('inpNombreLote').value,
-        c: document.getElementById('inpTpLote').value,
-        v: document.getElementById('inpVelTeorica').value,
-        i: document.getElementById('inpInicio').value,
-        f: document.getElementById('inpFinal').value,
-        nc: document.getElementById('inpNumCambios').value,
-        mc: document.getElementById('inpMinPorCambio').value,
-        ab: document.getElementById('chkAutoBreaks').checked
-      };
-      localStorage.setItem('mtaz_form', JSON.stringify(data));
+      safeStorageSet(STORAGE_KEYS.form, JSON.stringify(getFormData()));
     }
 
     function cargarFormulario() {
       try {
-        const d = JSON.parse(localStorage.getItem('mtaz_form'));
-        if (!d) return;
-        if(d.n) { document.getElementById('inpNombreLote').value = d.n; actualizarColorLoteInput(); }
-        if(d.c) document.getElementById('inpTpLote').value = d.c;
-        if(d.v) document.getElementById('inpVelTeorica').value = d.v;
-        if(d.i) document.getElementById('inpInicio').value = d.i;
-        if(d.f) document.getElementById('inpFinal').value = d.f;
-        if(d.nc) document.getElementById('inpNumCambios').value = d.nc;
-        if(d.mc) document.getElementById('inpMinPorCambio').value = d.mc;
-        if(d.ab !== undefined) document.getElementById('chkAutoBreaks').checked = d.ab;
-      } catch(e) {}
+        const data = JSON.parse(safeStorageGet(STORAGE_KEYS.form) || 'null');
+        if (!data || typeof data !== 'object') return;
+        if (data.n !== undefined) byId('inpNombreLote').value = String(data.n);
+        if (data.c !== undefined) byId('inpTpLote').value = String(data.c);
+        if (data.v !== undefined && ['12000', '11300', '10500'].includes(String(data.v))) byId('inpVelTeorica').value = String(data.v);
+        if (data.i !== undefined) byId('inpInicio').value = String(data.i);
+        if (data.f !== undefined) byId('inpFinal').value = String(data.f);
+        if (data.nc !== undefined) byId('inpNumCambios').value = String(data.nc);
+        if (data.mc !== undefined) byId('inpMinPorCambio').value = String(data.mc);
+        if (typeof data.ab === 'boolean') byId('chkAutoBreaks').checked = data.ab;
+      } catch (error) {
+        console.warn('No se pudo recuperar el formulario guardado:', error);
+      }
+      actualizarColorLoteInput();
     }
 
-    let historial = [];
+    function persistHistory() {
+      safeStorageSet(STORAGE_KEYS.history, JSON.stringify(historial));
+    }
+
+    function loadHistory() {
+      try {
+        const stored = JSON.parse(safeStorageGet(STORAGE_KEYS.history) || '[]');
+        historial = Array.isArray(stored) ? stored.filter(item => item && typeof item === 'object').map(item => ({
+          id: Number(item.id) || Date.now() + Math.floor(Math.random() * 100000),
+          num: String(item.num ?? ''),
+          aves: Math.max(0, Number(item.aves) || 0),
+          ini: String(item.ini ?? ''),
+          fin: String(item.fin ?? ''),
+          bruto: Math.max(0, Number(item.bruto) || 0),
+          ave: Math.max(0, Number(item.ave) || 0),
+          vr: Math.max(0, Number(item.vr) || 0),
+          vt: Math.max(0, Number(item.vt) || 0),
+          pausas: Math.max(0, Number(item.pausas) || 0),
+          cambios: Math.max(0, Number(item.cambios) || 0),
+          teorico: Math.max(0, Number(item.teorico) || 0)
+        })) : [];
+      } catch (error) {
+        historial = [];
+        console.warn('El historial guardado no se pudo leer:', error);
+      }
+    }
 
     function guardarLoteEnHistorial() {
-      const tpLote = parseFloat(document.getElementById('inpTpLote').value) || 0;
-      const inicio = document.getElementById('inpInicio').value;
-      const final = document.getElementById('inpFinal').value;
-      
-      if (tpLote <= 0 || !inicio || !final) {
-        showToast("Rellena Cantidad, Inicio y Fin antes de guardar.", "error");
+      const tpLote = readNumber('inpTpLote', 0);
+      const startText = byId('inpInicio').value.trim();
+      const endText = byId('inpFinal').value.trim();
+      const start = parseHHMM(startText);
+      const end = parseHHMM(endText);
+
+      if (!Number.isFinite(tpLote) || tpLote <= 0 || start === null || end === null) {
+        showToast('Introduce una cantidad de aves válida y horas HH:MM correctas.', 'error');
+        return;
+      }
+      const brutoMin = getElapsedMinutes(start, end);
+      if (brutoMin <= 0) {
+        showToast('La duración del lote debe ser superior a cero.', 'error');
         return;
       }
 
-      const minInicio = timeToMinutes(inicio);
-      const minFinal = timeToMinutes(final);
-      let brutoMin = minFinal - minInicio;
-      if (brutoMin < 0) brutoMin += 1440;
-      
-      const velT = parseFloat(document.getElementById('inpVelTeorica').value) || 12000;
-      const teoricoMin = redondearAvesMinutos((tpLote / velT) * 60);
-      
-      let pausasMin = 0;
-      if (document.getElementById('chkAutoBreaks').checked) {
-        pausasMin += calculateOverlap(minInicio, minFinal, 1415, 1440);
-        pausasMin += calculateOverlap(minInicio, minFinal, 150, 165);
-        pausasMin += calculateOverlap(minInicio, minFinal, 300, 307);
+      const velocidadTeorica = readNumber('inpVelTeorica', 0);
+      if (velocidadTeorica <= 0) {
+        showToast('La velocidad teórica debe ser mayor que cero.', 'error');
+        return;
       }
-      pausasMin += (parseFloat(document.getElementById('inpNumCambios').value) || 0) * (parseFloat(document.getElementById('inpMinPorCambio').value) || 0);
 
-      const averiaMin = Math.max(0, brutoMin - teoricoMin - pausasMin);
-      const velReal = Math.round((tpLote / brutoMin) * 60);
-      const numLote = document.getElementById('inpNombreLote').value || (historial.length + 1).toString();
+      const theoretical = redondearAvesMinutos((tpLote / velocidadTeorica) * 60);
+      const numCambios = Math.max(0, readNumber('inpNumCambios', 0));
+      const minPorCambio = Math.max(0, readNumber('inpMinPorCambio', 0));
+      const downtime = getPauseAndDowntime(brutoMin, start, byId('chkAutoBreaks').checked, numCambios, minPorCambio);
+      const averia = Math.max(0, brutoMin - theoretical - downtime.total);
+      const realSpeed = Math.round((tpLote / brutoMin) * 60);
+      const lotNumber = byId('inpNombreLote').value.trim() || String(historial.length + 1);
+      const entry = {
+        id: Date.now(), num: lotNumber, aves: tpLote, ini: startText, fin: endText,
+        bruto: Math.round(brutoMin), ave: Math.round(averia), vr: realSpeed, vt: velocidadTeorica,
+        pausas: Math.round(downtime.pauseMinutes), cambios: Math.round(downtime.changeMinutes), teorico: theoretical
+      };
 
-      historial.push({ id: Date.now(), num: numLote, aves: tpLote, ini: inicio, fin: final, bruto: Math.round(brutoMin), ave: Math.round(averiaMin), vr: velReal, vt: velT });
-      
-      localStorage.setItem('mtaz_hist', JSON.stringify(historial));
+      historial.push(entry);
+      persistHistory();
       renderHistorial();
-      
-      document.getElementById('inpTpLote').value = '';
-      document.getElementById('inpInicio').value = final; 
-      document.getElementById('inpFinal').value = '';
-      showToast(`Lote ${numLote} guardado con éxito.`, "success");
+
+      byId('inpTpLote').value = '';
+      byId('inpInicio').value = endText;
+      byId('inpFinal').value = '';
+      byId('inpNombreLote').value = '';
+      actualizarColorLoteInput();
+      showToast(`Lote ${lotNumber} guardado correctamente.`, 'success');
       calculateAll();
     }
 
     function renderHistorial() {
-      const container = document.getElementById('listaHistorial');
-      let tAves = 0, tAve = 0;
-      
-      if (!historial || historial.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6 font-medium">No hay lotes registrados aún.</p>';
-        document.getElementById('histTotalAves').textContent = '0';
-        document.getElementById('histTotalAveria').textContent = '0m';
-        document.getElementById('histTotalLotes').textContent = '0';
-        return;
+      const container = byId('listaHistorial');
+      container.replaceChildren();
+      let totalAves = 0;
+      let totalAveria = 0;
+
+      if (historial.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'text-xs text-slate-400 text-center py-6 font-medium';
+        empty.textContent = 'No hay lotes registrados aún.';
+        container.appendChild(empty);
+      } else {
+        for (const item of historial) {
+          totalAves += item.aves;
+          totalAveria += item.ave;
+
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222]';
+          const details = document.createElement('div');
+          details.className = 'min-w-0';
+          const title = document.createElement('div');
+          title.className = 'font-bold text-sm text-slate-900 dark:text-white flex flex-wrap items-center gap-2';
+          const badge = document.createElement('span');
+          badge.className = `px-2 py-0.5 rounded text-xs font-black border ${getColorForLote(item.num)}`;
+          badge.textContent = `Lote #${item.num}`;
+          const birds = document.createElement('span');
+          birds.textContent = `${numberFormatter.format(item.aves)} aves`;
+          title.append(badge, birds);
+          const times = document.createElement('div');
+          times.className = 'text-[10px] text-slate-500 font-mono mt-1';
+          times.textContent = `${item.ini} → ${item.fin} | VR: ${numberFormatter.format(item.vr)} aves/h`;
+          details.append(title, times);
+
+          const actions = document.createElement('div');
+          actions.className = 'flex items-center space-x-3 flex-shrink-0';
+          const downtimeBadge = document.createElement('span');
+          downtimeBadge.className = `font-mono text-xs font-bold px-2 py-1 rounded-lg ${item.ave > 0 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'}`;
+          downtimeBadge.textContent = `${item.ave}m`;
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'text-slate-400 hover:text-rose-500 transition p-1';
+          remove.setAttribute('aria-label', `Eliminar lote ${item.num}`);
+          remove.addEventListener('click', () => borrarLote(item.id));
+          const icon = document.createElement('i');
+          icon.setAttribute('data-lucide', 'x');
+          icon.className = 'w-4 h-4';
+          remove.appendChild(icon);
+          actions.append(downtimeBadge, remove);
+          row.append(details, actions);
+          container.appendChild(row);
+        }
       }
 
-      container.innerHTML = '';
-      historial.forEach(h => {
-        tAves += h.aves; tAve += h.ave;
-        const badgeColor = getColorForLote(h.num);
-        container.innerHTML += `
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#111] border border-slate-200 dark:border-[#222]">
-            <div>
-              <div class="font-bold text-sm text-slate-900 dark:text-white flex items-center">
-                <span class="px-2 py-0.5 rounded text-xs font-black border mr-2 ${badgeColor}">Lote #${h.num}</span> 
-                <span>${h.aves.toLocaleString()} aves</span>
-              </div>
-              <div class="text-[10px] text-slate-500 font-mono mt-1">${h.ini} ➔ ${h.fin} | VR: ${h.vr.toLocaleString()}</div>
-            </div>
-            <div class="flex items-center space-x-3">
-              <span class="font-mono text-xs font-bold px-2 py-1 rounded-lg ${h.ave > 0 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'}">${h.ave}m</span>
-              <button onclick="borrarLote(${h.id})" class="text-slate-400 hover:text-rose-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
-            </div>
-          </div>
-        `;
-      });
-      
-      document.getElementById('histTotalAves').textContent = tAves.toLocaleString();
-      document.getElementById('histTotalAveria').textContent = `${tAve}m`;
-      document.getElementById('histTotalLotes').textContent = historial.length;
-      lucide.createIcons();
+      byId('histTotalAves').textContent = numberFormatter.format(totalAves);
+      byId('histTotalAveria').textContent = `${Math.round(totalAveria)}m`;
+      byId('histTotalLotes').textContent = String(historial.length);
+      if (window.lucide) lucide.createIcons({ root: container });
     }
 
     function borrarLote(id) {
-      historial = historial.filter(h => h.id !== id);
-      localStorage.setItem('mtaz_hist', JSON.stringify(historial));
+      historial = historial.filter(item => item.id !== id);
+      persistHistory();
       renderHistorial();
-      showToast("Lote eliminado.", "info");
+      showToast('Lote eliminado.', 'info');
     }
 
     function limpiarHistorial() {
-      if(confirm("¿Borrar todo el turno MAD?")) {
-        historial = [];
-        localStorage.setItem('mtaz_hist', '[]');
-        renderHistorial();
-        showToast("Historial limpio.", "info");
+      if (!window.confirm('¿Borrar todo el historial del turno MAD?')) return;
+      historial = [];
+      persistHistory();
+      renderHistorial();
+      showToast('Historial limpio.', 'info');
+    }
+
+    // ---------------------------------------------------------------------
+    // Copia a Excel y exportación CSV compatible con Excel en español
+    // ---------------------------------------------------------------------
+    function historyAsTSV() {
+      const rows = [['Lote', 'Aves', 'Inicio', 'Fin', 'Bruto (min)', 'Teórico (min)', 'Pausas (min)', 'Cambios (min)', 'Avería (min)', 'Velocidad real', 'Velocidad teórica']];
+      historial.forEach(item => rows.push([item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt]));
+      return rows.map(row => row.join('\t')).join('\n');
+    }
+
+    async function copiarTablaPortapapeles() {
+      if (historial.length === 0) return showToast('No hay datos para copiar.', 'error');
+      const text = historyAsTSV();
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          const copied = document.execCommand('copy');
+          area.remove();
+          if (!copied) throw new Error('El navegador no permitió copiar.');
+        }
+        showToast('Copiado para Excel.', 'success');
+      } catch (error) {
+        console.error(error);
+        showToast('No se pudo copiar. Usa Descargar CSV.', 'error');
       }
     }
 
-    function copiarTablaPortapapeles() {
-      if(historial.length === 0) return showToast("No hay datos para copiar", "error");
-      let texto = "Lote\tAves\tInicio\tFin\tBruto(m)\tAveria(m)\tV.Real\tV.Teorica\n";
-      historial.forEach(h => texto += `${h.num}\t${h.aves}\t${h.ini}\t${h.fin}\t${h.bruto}\t${h.ave}\t${h.vr}\t${h.vt}\n`);
-      navigator.clipboard.writeText(texto).then(() => showToast("Copiado para Excel", "success"));
+    function csvCell(value) {
+      const text = String(value ?? '');
+      return `"${text.replace(/"/g, '""')}"`;
     }
 
     function exportarCSV() {
-      if(historial.length === 0) return showToast("No hay datos para exportar", "error");
-      let csv = "Lote,Aves,Inicio,Fin,DuracionBruta_min,Averia_min,VelocidadReal,VelocidadTeorica\n";
-      historial.forEach(h => csv += `${h.num},${h.aves},${h.ini},${h.fin},${h.bruto},${h.ave},${h.vr},${h.vt}\n`);
+      if (historial.length === 0) return showToast('No hay datos para exportar.', 'error');
+      const rows = [
+        ['Lote', 'Aves', 'Inicio', 'Fin', 'DuracionBruta_min', 'TiempoTeorico_min', 'Pausas_min', 'Cambios_min', 'Averia_min', 'VelocidadReal_aves_h', 'VelocidadTeorica_aves_h'],
+        ...historial.map(item => [item.num, item.aves, item.ini, item.fin, item.bruto, item.teorico, item.pausas, item.cambios, item.ave, item.vr, item.vt])
+      ];
+      const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(';')).join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `Turno_MAD_${new Date().toISOString().slice(0,10)}.csv`;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Turno_MAD_${new Date().toLocaleDateString('en-CA')}.csv`;
+      document.body.appendChild(link);
       link.click();
-      showToast("Descarga iniciada", "success");
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast('Descarga iniciada.', 'success');
     }
 
+    // ---------------------------------------------------------------------
+    // Reinicio e inicialización
+    // ---------------------------------------------------------------------
     function resetValues() {
-      document.getElementById('inpNombreLote').value = '';
-      document.getElementById('inpTpLote').value = '';
-      document.getElementById('inpInicio').value = '';
-      document.getElementById('inpFinal').value = '';
+      byId('inpNombreLote').value = DEFAULTS.lote;
+      byId('inpTpLote').value = DEFAULTS.aves;
+      byId('inpVelTeorica').value = DEFAULTS.velocidad;
+      byId('inpInicio').value = DEFAULTS.inicio;
+      byId('inpFinal').value = DEFAULTS.fin;
+      byId('inpNumCambios').value = DEFAULTS.cambios;
+      byId('inpMinPorCambio').value = DEFAULTS.minCambio;
+      byId('chkAutoBreaks').checked = DEFAULTS.pausas;
       actualizarColorLoteInput();
-      localStorage.removeItem('mtaz_form');
+      try { localStorage.removeItem(STORAGE_KEYS.form); } catch (error) { console.warn(error); }
       calculateAll();
-      showToast("Consola reiniciada", "info");
+      showToast('Formulario reiniciado. El historial se conserva.', 'info');
     }
 
-    try { historial = JSON.parse(localStorage.getItem('mtaz_hist')) || []; } catch(e){}
-    cargarFormulario();
-    renderHistorial();
-    calculateAll();
-  </script>
+    function initializeApp() {
+      initializeTheme();
+      cargarFormulario();
+      loadHistory();
+      renderHistorial();
+      calculateAll();
+      updateLiveClock();
+      window.setInterval(updateLiveClock, 1000);
+      // No se recrea el intervalo desde calculateAll: evita acumulaciones y parpadeos.
+      liveTimerInterval = window.setInterval(() => {
+        const start = byId('inpInicio').value.trim();
+        const end = byId('inpFinal').value.trim();
+        if (parseHHMM(start) !== null && end === '' && readNumber('inpTpLote', 0) > 0) calculateAll();
+      }, 10000);
+    }
+
+    initializeApp();
+</script>
 </body>
 </html>
