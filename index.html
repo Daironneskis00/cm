@@ -168,6 +168,12 @@
     </div>
 
     <div class="flex items-center space-x-3">
+      <!-- BOTÓN DE DESCARGAR APP (Se oculta automáticamente si ya está instalada o no disponible) -->
+      <button id="btnInstallApp" onclick="installPWA()" class="hidden items-center space-x-1.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-xs font-black px-3.5 py-2 rounded-xl shadow-lg shadow-indigo-500/20 border border-indigo-400/30 transition-all active:scale-95 animate-pulse">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Instalar App</span>
+      </button>
+
       <div class="hidden sm:flex flex-col items-end mr-3">
         <div class="bg-white dark:bg-[#111] border border-slate-200 dark:border-[#333] px-3 py-1 rounded-lg shadow-inner flex flex-col items-end">
           <span id="liveClock" class="font-mono text-sm font-black text-slate-800 dark:text-slate-200 tracking-tight">00:00:00</span>
@@ -448,7 +454,56 @@
     'use strict';
 
     // ---------------------------------------------------------------------
-    // Configuración y utilidades
+    // Configuración y utilidades PWA (Instalación de la App)
+    // ---------------------------------------------------------------------
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Previene que Chrome muestre el banner automático por defecto
+      e.preventDefault();
+      // Guarda el evento para dispararlo al hacer clic en el botón
+      deferredPrompt = e;
+      // Muestra el botón de instalar app en la cabecera
+      const btnInstall = document.getElementById('btnInstallApp');
+      if (btnInstall) {
+        btnInstall.classList.remove('hidden');
+        btnInstall.classList.add('flex');
+      }
+    });
+
+    async function installPWA() {
+      const btnInstall = document.getElementById('btnInstallApp');
+      if (!deferredPrompt) {
+        showToast('La app ya está instalada o tu navegador no permite la instalación directa.', 'info');
+        return;
+      }
+      // Muestra el diálogo nativo de instalación de Chrome
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        showToast('¡Aplicación instalada con éxito!', 'success');
+      }
+      // Limpia el evento guardado y oculta el botón una vez procesado
+      deferredPrompt = null;
+      if (btnInstall) {
+        btnInstall.classList.add('hidden');
+        btnInstall.classList.remove('flex');
+      }
+    }
+
+    window.addEventListener('appinstalled', () => {
+      showToast('MTAZ PLUS se ha instalado correctamente en tu dispositivo.', 'success');
+      const btnInstall = document.getElementById('btnInstallApp');
+      if (btnInstall) {
+        btnInstall.classList.add('hidden');
+        btnInstall.classList.remove('flex');
+      }
+      deferredPrompt = null;
+    });
+
+    // ---------------------------------------------------------------------
+    // Configuración general y lógica de la aplicación
     // ---------------------------------------------------------------------
     if (window.lucide) lucide.createIcons();
 
@@ -1135,7 +1190,7 @@
 
     initializeApp();
 
-    // AÑADIDO: Registro del Service Worker para habilitar la PWA
+    // Registro del Service Worker para habilitar la PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
